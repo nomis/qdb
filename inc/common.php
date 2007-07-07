@@ -32,7 +32,9 @@ $config = array(
 	'autohide_user'  => "Hide all new user quotes automatically",
 	'email_notify'   => "Notification email",
 	'email_full'     => "Full email",
-	'tags_useronly'  => "Only allow users to create new tags"
+	'tags_useronly'  => "Only allow users to create new tags",
+	'tags_regexp'    => "Regular expression of valid tags",
+	'secret'         => "Secret string used to validate urls"
 );
 foreach ($config as $option => $msg) {
 	if (isset($$option)) { unset($$option); }
@@ -57,12 +59,12 @@ try {
 }
 
 function qdb_header($title = NULL) {
-	global $config, $user;
+	global $config, $user, $pending, $flagged;
 	include("header.php");
 }
 
 function qdb_footer() {
-	global $config, $user;
+	global $config, $user, $pending, $flagged;
 	include("footer.php");
 }
 

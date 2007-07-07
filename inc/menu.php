@@ -40,8 +40,8 @@
 		</ul></li><?
 		if ($user->admin) {
 			?><li>Admin: <ul class="menu">
-				<li><a href="pending.php">Pending</a></li>
-				<li><a href="flagged.php">Flagged</a></li>
+				<li><a href="pending.php">Pending</a><?=$pending ? " ($pending->count)" : ""?></li>
+				<li><a href="flagged.php">Flagged</a><?=$flagged ? " ($flagged->count)" : ""?></li>
 				<li><a xhref="users.php">Users</a></li>
 				<li><a xhref="tags.php">Tags</a></li>
 			</ul></li><?

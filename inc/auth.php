@@ -20,6 +20,8 @@
 	$Id$
 */
 $user = FALSE;
+$pending = FALSE;
+$flagged = FALSE;
 
 if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 	try {
@@ -30,6 +32,18 @@ if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 		$stmt->execute();
 		$user = $stmt->fetch(PDO::FETCH_OBJ);
 		$stmt->closeCursor();
+
+		if ($user !== FALSE && $user->admin) {
+			$stmt = $db->prepare("SELECT COUNT(hide) AS count FROM quotes WHERE hide");
+			$stmt->execute();
+			$pending = $stmt->fetch(PDO::FETCH_OBJ);
+			$stmt->closeCursor();
+
+			$stmt = $db->prepare("SELECT COUNT(flag) AS count FROM quotes WHERE flag");
+			$stmt->execute();
+			$flagged = $stmt->fetch(PDO::FETCH_OBJ);
+			$stmt->closeCursor();
+		}
 	} catch (PDOException $e) {
 		qdb_die("Error checking username and password: ".htmlentities($e->getMessage()).".");
 	}

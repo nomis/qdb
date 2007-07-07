@@ -35,8 +35,8 @@ function qdb_secure($values) {
 
 	foreach ($values as $name => $value) {
 		if ($str != "") { $str .= "&amp;"; }
-		if ($value == "" && isset($_GET[$name])) {
-			$str .= $name."=".urlencode($_GET[$name]);
+		if ($value == "" && isset($_REQUEST[$name])) {
+			$str .= $name."=".urlencode($_REQUEST[$name]);
 		} else {
 			$str .= $name."=".urlencode($value);
 		}
@@ -45,7 +45,7 @@ function qdb_secure($values) {
 	$hash = sha1($config['secret'].$str);
 	$str .= "&amp;hash=$hash";
 
-	return $verifying ? ($hash == $_GET["hash"]) : $str;
+	return $verifying ? ($hash == $_REQUEST["hash"]) : $str;
 }
 
 

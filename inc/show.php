@@ -20,10 +20,10 @@
 	$Id$
 */
 function qdb_get_show($id) {
-	global $db;
+	global $db, $user;
 
 	try {
-		$stmt = $db->prepare("SELECT * FROM quotes WHERE id=:id AND hide=FALSE");
+		$stmt = $db->prepare("SELECT * FROM quotes WHERE id=:id");
 		$stmt->bindParam(":id", $id);
 
 		$stmt->execute();
@@ -32,6 +32,8 @@ function qdb_get_show($id) {
 
 		if ($quote === FALSE) {
 			qdb_err("Quote #".$id." does not exist.");
+		} else if ($quote->hide && ($user === FALSE || !$user->admin)) {
+			qdb_err("Quote #".$id." is hidden.");
 		} else {
 			$stmt = $db->prepare("SELECT tags.* FROM tags"
 				." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
@@ -67,7 +69,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 	}
 
 	try {
-		$sql = "SELECT tags.id, tags.name, count(quotes_tags) as count FROM tags"
+		$sql = "SELECT tags.id, tags.name, count(quotes_tags) AS count FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 			." JOIN quotes ON quotes_tags.quotes_id=quotes.id";
 		if ($where != "") { $sql .= " WHERE ($where)"; }
@@ -108,7 +110,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 
 			foreach ($tags as $tag) {
 				?><dt><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"
-					title="add <?=htmlentities($tag->name)?> to tag filter"><?=htmlentities($tag->name)?></a></dt><?
+					title="add '<?=htmlentities($tag->name)?>' to tag filter"><?=htmlentities($tag->name)?></a></dt><?
 				?><dd><?=htmlentities($tag->count)?></dd><?
 			}
 		}
@@ -181,10 +183,50 @@ function qdb_get_user($id) {
 	} catch (PDOException $e) {
 		qdb_die("Error retrieving user data: ".htmlentities($e->getMessage()).".");
 	}
+
+	return NULL;
+}
+
+function qdb_get_tag($name) {
+	global $db, $tagcache;
+
+	if ($name == NULL) { return ""; }
+
+	if (isset($tagcache[$name])) {
+		return $tagcache[$name]->id;
+	}
+
+	try {
+		$stmt = $db->prepare("SELECT * FROM tags WHERE name=:name");
+		$stmt->bindParam(":name", $name);
+
+		$stmt->execute();
+		$tag = $stmt->fetch(PDO::FETCH_OBJ);
+		$stmt->closeCursor();
+
+		if ($tag !== FALSE) {
+			$tagcache[$name] = $tag;
+			return $tag->id;
+		}
+	} catch (PDOException $e) {
+		qdb_die("Error retrieving tag data: ".htmlentities($e->getMessage()).".");
+	}
+
+	return NULL;
+}
+
+function qdb_del_tag($name) {
+	global $tagcache;
+
+	if ($name == NULL) { return ""; }
+
+	if (isset($tagcache[$name])) {
+		unset($tagcache[$name]);
+	}
 }
 
 function qdb_show($quote, $tags) {
-	global $user;
+	global $user, $config;
 	?>
 <p class="quote"><span class="header">
 <a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>:
@@ -194,32 +236,32 @@ function qdb_show($quote, $tags) {
 <?
 	if ($user !== FALSE && $user->admin) {
 		?>
-		<a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => 1))?>" title="edit #<?=$quote->id?>">¶</a>
+		<a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => 1))?>" title="edit #<?=$quote->id?>">&para;</a>
 		<?
 		if ($quote->flag) {
 			?>
-			<a class="op unflag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 0))?>" title="unflag #<?=$quote->id?>">!</a>
+			<a class="op unflag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 0))?>" title="unflag #<?=$quote->id?>">&#x2691;</a>
 			<?
 		} else {
 			?>
-			<a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 1))?>" title="flag #<?=$quote->id?>">?</a>
+			<a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 1))?>" title="flag #<?=$quote->id?>">&#x2690;</a>
 			<?
 		}
 		if ($quote->hide) {
 			?>
-			<a class="op show" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 0))?>" title="show #<?=$quote->id?>">✓</a>
+			<a class="op show" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 0))?>" title="show #<?=$quote->id?>">&#x2713;</a>
 			<?
 		} else {
 			?>
-			<a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 1))?>" title="hide #<?=$quote->id?>">…</a>
+			<a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 1))?>" title="hide #<?=$quote->id?>">&hellip;</a>
 			<?
 		}
 		?>
-		<a class="op del" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => 1))?>" title="delete #<?=$quote->id?>">✗</a>
+		<a class="op del" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => 1))?>" title="delete #<?=$quote->id?>">&#x2717;</a>
 		<?
 	} else {
 		?>
-		<a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 1))?>" title="flag #<?=$quote->id?>">?</a>
+		<a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 1))?>" title="flag #<?=$quote->id?>">&#x2690;</a>
 		<?
 	}
 
@@ -236,11 +278,17 @@ if ($tags !== FALSE) {
 	?><ul class="tags"><?
 	foreach ($tags as $tag) {
 		?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"
-			title="add <?=htmlentities($tag->name)?> to tag filter"><?=htmlentities($tag->name)?></a></li><?
+			title="add '<?=htmlentities($tag->name)?>' to tag filter"><?=htmlentities($tag->name)?></a></li><?
 	}
 	?></ul><?
 }
-?></p><br>
+if (!$config['tags_useronly'] || $user !== FALSE) {
+	?><form class="quote" method="post" action="modquote.php">
+	<input type="hidden" name="id" value="<?=$quote->id?>">
+	<input type="text" name="tagset"><input type="submit" value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags">
+	</form><?
+}
+?></p><br><br>
 	<?
 }
 
@@ -288,7 +336,7 @@ function qdb_tags_filter() {
 			$stmt->execute();
 			while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
 				?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_del($tag->id)?>"
-					title="remove <?=htmlentities($tag->name)?> from tag filter">!<?=htmlentities($tag->name)?></a></li><?
+					title="remove '<?=htmlentities($tag->name)?>' from tag filter">!<?=htmlentities($tag->name)?></a></li><?
 			}
 			$stmt->closeCursor();
 		} catch (PDOException $e) {

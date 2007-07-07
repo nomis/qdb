@@ -6,7 +6,9 @@ $autohide_user = "FALSE";
 $email_notify = array();
 $email_full = array();
 $tags_useronly = FALSE;
-$tags_regexp = '/^#?[A-Za-z0-9_-]$/';
+$tags_regexp = '/^#?[A-Za-z0-9_-]+$/';
+
+$secret = "05e33136-ec38-1b2e-f517-b48249afea6c";
 
 $db = "pgsql:";
 $user = NULL;

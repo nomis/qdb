@@ -161,5 +161,94 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		qdb_messages();
 		qdb_footer();
 	}
+} else if (isset($_POST["id"]) && qdb_digit($_POST["id"])) {
+	if (isset($_POST["tagset"])) {
+		qdb_header("Tags #".$_POST["id"]);
+		if ($user === FALSE && $config['tags_useronly']) {
+			?><p>You are not allowed to set tags!</p><?
+		} else {
+			try {
+				$stmt_ins = $db->prepare("INSERT INTO tags (name, users_id, ip) VALUES(:name, :userid, :ip)");
+				$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, users_id, ip) VALUES(:quoteid, :tagid, :userid, :ip)");
+				$stmt_del = $db->prepare("DELETE FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
+				$stmt_clr = $db->prepare("DELETE FROM tags WHERE id=:tagid AND NOT EXISTS"
+					." (SELECT tags_id FROM quotes_tags WHERE tags_id=:tagid LIMIT 1)");
+
+				foreach (explode(" ", $_POST["tagset"]) as $tag) {
+					$add = TRUE;
+					if (substr($tag, 0, 1) == "!") {
+						if ($user === FALSE || !$user->admin) { continue; }
+						$add = FALSE;
+						$tag = substr($tag, 1);
+					} else if (!preg_match($config['tags_regexp'], $tag)) {
+						qdb_err("Tag '".htmlentities($tag)."' ignored.");
+						continue;
+					}
+
+					$tagid = qdb_get_tag($tag);
+					if ($add) {
+						if ($tagid == NULL) {
+							$stmt_ins->bindParam(":name", $tag);
+							if ($user === NULL) {
+								$stmt_ins->bindParam(":userid", NULL);
+							} else {
+								$stmt_ins->bindParam(":userid", $user->id);
+							}
+							$stmt_ins->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
+							$stmt_ins->execute();
+							if ($stmt_ins->rowCount() <= 0) {
+								qdb_err("Error creating tag '".htmlentities($tag)."'.");
+								continue;
+							}
+							$tagid = $db->lastInsertId("tags_id_seq");
+							$stmt_ins->closeCursor();
+						}
+
+						$stmt_add->bindParam(":quoteid", $_POST["id"]);
+						$stmt_add->bindParam(":tagid", $tagid);
+						if ($user === NULL) {
+							$stmt_add->bindParam(":userid", NULL);
+						} else {
+							$stmt_add->bindParam(":userid", $user->id);
+						}
+						$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
+						$stmt_add->execute();
+						if ($stmt_add->rowCount() > 0) {
+							qdb_ok("Tag '".htmlentities($tag)."' added.");
+						} else {
+							qdb_err("Tag '".htmlentities($tag)."' already set.");
+						}
+						$stmt_add->closeCursor();
+					} else {
+						if ($tagid == NULL) {
+							qdb_err("Tag '".htmlentities($tag)."' does not exist.");
+							continue;
+						}
+
+						$stmt_del->bindParam(":quoteid", $_POST["id"]);
+						$stmt_del->bindParam(":tagid", $tagid);
+						$stmt_del->execute();
+						if ($stmt_del->rowCount() > 0) {
+							qdb_ok("Tag '".htmlentities($tag)."' removed.");
+						} else {
+							qdb_err("Tag '".htmlentities($tag)."' not set.");
+						}
+						$stmt_del->closeCursor();
+
+						$stmt_clr->bindParam(":tagid", $tagid);
+						$stmt_clr->execute();
+						if ($stmt_clr->rowCount() > 0) { qdb_del_tag($tag); }
+						$stmt_clr->closeCursor();
+					}
+				}
+				$db->commit();
+			} catch (PDOException $e) {
+				qdb_die("Error modifying tags for quote: ".htmlentities($e->getMessage()).".");
+			}
+		}
+		qdb_messages();
+		?><p><a href="./?<?=$_POST["id"]?>" title="quote #<?=$_POST["id"]?>">Back to #<?=$_POST["id"]?></a>.</p><?
+		qdb_footer();
+	}
 }
 ?>
