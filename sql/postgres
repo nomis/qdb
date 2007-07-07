@@ -60,3 +60,18 @@ CREATE TABLE quotes_tags (
 );
 CREATE INDEX quotes_tags_quotes_id ON quotes_tags (quotes_id);
 CREATE INDEX quotes_tags_tags_id ON quotes_tags (tags_id);
+
+CREATE TABLE votes (
+	-- data
+	quotes_id BIGINT NOT NULL,
+	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	users_id BIGINT,
+	ip INET,
+
+	-- metadata
+	vote INT NOT NULL,
+
+	FOREIGN KEY (quotes_id) REFERENCES quotes (id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (users_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
+);
+CREATE INDEX votes_quotes_id ON votes (quotes_id);

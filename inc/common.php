@@ -19,22 +19,25 @@
 	http://svn.lp0.eu/simon/qdb/
 	$Id$
 */
-include("config.php");
+include("magic_quotes.php");
 include("messages.php");
 
 function qdb_digit($str) { return preg_match('/^[0-9]+$/', $str); }
 
-if (!defined("QDB_CONFIG")) { qdb_die("Invalid or missing configuration."); }
 $config = array(
 	'db'             => "PDO DSN",
 	'name'           => "Site name",
-	'top'            => "Top N Quotes",
 	'perpage'        => "Quotes displayed per page",
 	'autohide_anon'  => "Hide all new anonymous quotes automatically",
 	'autohide_user'  => "Hide all new user quotes automatically",
 	'email_notify'   => "Notification email",
-	'email_full'     => "Full email"
+	'email_full'     => "Full email",
+	'tags_useronly'  => "Only allow users to create new tags"
 );
+foreach ($config as $option => $msg) {
+	if (isset($$option)) { unset($$option); }
+}
+include("config.php");
 foreach ($config as $option => $msg) {
 	if (!isset($$option)) {
 		qdb_die("Missing configuration option '$option' ($msg).");
@@ -65,4 +68,5 @@ function qdb_footer() {
 
 include("auth.php");
 include("show.php");
+include("query.php");
 ?>

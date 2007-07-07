@@ -17,11 +17,34 @@
 	Or, point your browser to http://www.gnu.org/copyleft/gpl.html
 
 	http://svn.lp0.eu/simon/qdb/
-	$Id$
+	$Id: auth.php 68 2007-07-07 11:19:33Z byte $
 */
-include("inc/common.php");
 
-qdb_header("Top");
-qdb_getall_show("hide=FALSE", "rating DESC, id DESC");
-qdb_footer();
+function qdb_secure($values) {
+	global $user, $config;
+
+	$verifying = TRUE;
+	$str = "";
+
+	if (!isset($values["now"])) { $values["now"] = microtime(TRUE); $verifying = FALSE; }
+	$values["ip"] = $_SERVER["REMOTE_ADDR"];
+	if ($user !== FALSE) {
+		$values["user"] = $user->id;
+	}
+	ksort($values);
+
+	foreach ($values as $name => $value) {
+		if ($str != "") { $str .= "&amp;"; }
+		if ($value == "" && isset($_GET[$name])) {
+			$str .= $name."=".urlencode($_GET[$name]);
+		} else {
+			$str .= $name."=".urlencode($value);
+		}
+	}
+
+	$hash = sha1($config['secret'].$str);
+	$str .= "&amp;hash=$hash";
+
+	return $verifying ? ($hash == $_GET["hash"]) : $str;
+}
 ?>

@@ -17,11 +17,15 @@
 	Or, point your browser to http://www.gnu.org/copyleft/gpl.html
 
 	http://svn.lp0.eu/simon/qdb/
-	$Id$
+	$Id: latest.php 69 2007-07-07 12:30:23Z byte $
 */
 include("inc/common.php");
 
-qdb_header("Top");
-qdb_getall_show("hide=FALSE", "rating DESC, id DESC");
+qdb_header("Pending");
+if ($user === FALSE || !$user->admin) {
+	?><p>You are not an admin!</p><?
+} else {
+	qdb_getall_show("hide=TRUE", "id ASC");
+}
 qdb_footer();
 ?>

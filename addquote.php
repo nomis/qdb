@@ -69,7 +69,9 @@ qdb_messages();
 <textarea name="quote" rows="5" cols="80">
 <?=isset($_POST["quote"]) ? htmlentities($_POST["quote"]) : ""?>
 </textarea><br>
+<? if (!$config['tags_useronly'] || $user !== FALSE) {?>
 <label>Tags</label>: <input name="tags" size="50">
+<? } ?>
 <input class="cancel" type="reset">
 <input class="ok" type="submit" value="Add Quote">
 </form>

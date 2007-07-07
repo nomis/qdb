@@ -17,11 +17,28 @@
 	Or, point your browser to http://www.gnu.org/copyleft/gpl.html
 
 	http://svn.lp0.eu/simon/qdb/
-	$Id$
+	$Id: auth.php 68 2007-07-07 11:19:33Z byte $
 */
-include("inc/common.php");
 
-qdb_header("Top");
-qdb_getall_show("hide=FALSE", "rating DESC, id DESC");
-qdb_footer();
+// http://uk.php.net/manual/en/security.magicquotes.disabling.php
+if (get_magic_quotes_gpc()) {
+	function undoMagicQuotes($array, $topLevel=true) {
+		$newArray = array();
+		foreach($array as $key => $value) {
+			if (!$topLevel) {
+				$key = stripslashes($key);
+			}
+			if (is_array($value)) {
+				$newArray[$key] = undoMagicQuotes($value, false);
+			} else {
+				$newArray[$key] = stripslashes($value);
+			}
+		}
+		return $newArray;
+	 }
+	 $_GET = undoMagicQuotes($_GET);
+	 $_POST = undoMagicQuotes($_POST);
+	 $_COOKIE = undoMagicQuotes($_COOKIE);
+	 $_REQUEST = undoMagicQuotes($_REQUEST);
+}
 ?>

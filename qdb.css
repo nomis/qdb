@@ -14,6 +14,7 @@ color: MenuText; background-color: Menu; font-size: 0.9em; }
 ul.menu li { display: inline; }
 ul.menu li:before { content: '/ '; }
 ul.menu li:first-child:before { content: ''; }
+ul.menu ul.menu { display: inline; margin: 0; padding: 0; }
 
 #content { min-height: 10em; margin: 0; padding: 0 0.5em 0 0.5em;
 border-width: 0 1px 0 1px; border-style: solid; border-color: Menu; }
@@ -29,10 +30,24 @@ ul.msgs li.err { background-color: #f99; }
 em.rating { font-style: normal; }
 .rating:before { content: '('; }
 .rating:after { content: ')'; }
-.flag:before { content: '['; }
-.flag:after { content: ']'; }
+/*
+	.rateup:before, .ratedown:before, .flag:before, .unflag:before, .del:before { content: '['; }
+	.rateup:after, .ratedown:after, .flag:after, .unflag:after, .del:after { content: ']'; }
+*/
+.op { padding: 0 0.5em 0 0.5em; text-decoration: none;
+background-color: ThreeDFace; border-width: 1px; border-style: solid;
+border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
 .quote .header { font-size: 0.8em; }
+.ratedown { margin-right: 1em; }
+.del { margin-right: 1em; }
+.user { font-weight: bold; }
 ul.tags { list-style: none; margin: 0; padding: 0; }
 ul.tags li { margin: 0; padding: 0 0.2em 0 0.2em; font-size: 0.7em; display: inline; }
 ul.tags li:after { content: ','; }
 ul.tags li:last-child:after { content: ''; }
+
+dl.tags { margin: 0; padding: 0; }
+dl.tags dt, dl.tags dd { display: inline; margin: 0; padding: 0; }
+dl.tags dd:before { content: ' ('; }
+dl.tags dd:after { content: '), '; }
+dl.tags dd:last-child:after { content: ')'; }

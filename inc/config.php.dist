@@ -1,13 +1,12 @@
 <?
-define("QDB_CONFIG", TRUE);
-
 $name = "Quote Database";
-$top = 150;
 $perpage = 50;
 $autohide_anon = "FALSE";
 $autohide_user = "FALSE";
 $email_notify = array();
 $email_full = array();
+$tags_useronly = FALSE;
+$tags_regexp = '/^#?[A-Za-z0-9_-]$/';
 
 $db = "pgsql:";
 $user = NULL;

@@ -31,7 +31,7 @@ function qdb_get_show($id) {
 		$stmt->closeCursor();
 
 		if ($quote === FALSE) {
-			qdb_err("Quote ".$id." does not exist.");
+			qdb_err("Quote #".$id." does not exist.");
 		} else {
 			$stmt = $db->prepare("SELECT tags.* FROM tags"
 				." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
@@ -53,13 +53,79 @@ function qdb_get_show($id) {
 
 function qdb_getall_show($where = "", $order = "", $limit = 0) {
 	global $db, $config;
+
+	?><dl class="tags"><?
+
+	function quicksort($seq) {
+		if(!count($seq)) return $seq;
+		$k = $seq[0];
+		$x = $y = array();
+		for($i=1; $i<count($seq); $i++) {
+			if($seq[$i]->name <= $k->name) { $x[] = $seq[$i]; } else { $y[] = $seq[$i]; }
+		}
+		return array_merge(quicksort($x), array($k), quicksort($y));
+	}
+
+	try {
+		$sql = "SELECT tags.id, tags.name, count(quotes_tags) as count FROM tags"
+			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
+			." JOIN quotes ON quotes_tags.quotes_id=quotes.id";
+		if ($where != "") { $sql .= " WHERE $where"; }
+		$tags_list = qdb_tags_list();
+		if (count($tags_list) > 0) {
+			if ($where == "") { $sql .= " WHERE"; } else { $sql .= " AND"; }
+			$sql .= " quotes_tags.quotes_id IN (SELECT quotes_id FROM quotes_tags"
+				." WHERE tags_id IN (".implode(",", $tags_list).") GROUP BY quotes_id"
+				." HAVING COUNT(quotes_id) = ".count($tags_list).")";
+		}
+		$sql .= " GROUP BY tags.id, tags.name";
+		if (count($tags_list) > 0) {
+			$sql .= " HAVING tags.id NOT IN (".implode(",", $tags_list).")";
+		}
+		$sql ." ORDER BY count DESC LIMIT 50";
+		$stmt = $db->prepare($sql);
+
+		$stmt->execute();
+		$tags = $stmt->fetchAll(PDO::FETCH_OBJ);
+		if ($tags !== FALSE) {
+			$tags = quicksort($tags);
+
+			$scale = array();
+			foreach ($tags as $tag) {
+				$scale[$tag->count]++;
+			}
+			krsort($scale);
+
+			$max = NULL;
+			foreach ($scale as $key => $count) {
+				if (!isset($max)) { $max = $key; }
+
+				$scale[$key] = round(0.5 + ($key / $max), 2);
+			}
+
+			foreach ($tags as $tag) {
+				?><dt><a href="?tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"
+					title="add <?=htmlentities($tag->name)?> to tag filter"><?=htmlentities($tag->name)?></a></dt><?
+				?><dd><?=htmlentities($tag->count)?></dd><?
+			}
+		}
+
+		$stmt->closeCursor();
+	} catch (PDOException $e) {
+		qdb_die("Error getting tag list: ".htmlentities($e->getMessage()).".");
+	}
+	?></dl><br><?
+
+	qdb_tags_filter();
+
 	try {
 		$sql = "SELECT * FROM quotes";
 		if ($where != "") { $sql .= " WHERE $where"; }
-		$tags_sql = qdb_tags_sql();
-		if ($tags_sql != "") {
-			$sql .= " AND id IN (SELECT quotes_id FROM quotes_tags GROUP BY quotes_id"
-				." HAVING BOOL_OR(tags_id IN ($tags_sql)))";
+		$tags_list = qdb_tags_list();
+		if (count($tags_list) > 0) {
+			$sql .= " AND id IN (SELECT quotes_id FROM quotes_tags"
+				." WHERE tags_id IN (".implode(",", $tags_list).") GROUP BY quotes_id"
+				." HAVING COUNT(quotes_id) = ".count($tags_list).")";
 		}
 		if ($order != "") { $sql .= " ORDER BY $order"; }
 		$sql .= " LIMIT ".($limit > 0 ? $limit : $config['perpage']);
@@ -80,23 +146,90 @@ function qdb_getall_show($where = "", $order = "", $limit = 0) {
 		}
 		$stmt->closeCursor();
 	} catch (PDOException $e) {
-		qdb_die("Error retrieving quote: ".htmlentities($e->getMessage()).".");
+		qdb_die("Error retrieving quotes: ".htmlentities($e->getMessage()).".");
+	}
+}
+
+function qdb_get_user($id) {
+	global $db, $usercache;
+
+	if ($id == NULL) { return ""; }
+
+	if (isset($usercache[$id])) {
+		return $usercache[$id]->name;
+	}
+
+	try {
+		$stmt = $db->prepare("SELECT * FROM users WHERE id=:id");
+		$stmt->bindParam(":id", $id);
+
+		$stmt->execute();
+		$user = $stmt->fetch(PDO::FETCH_OBJ);
+		$stmt->closeCursor();
+
+		if ($user !== FALSE) {
+			$usercache[$id] = $user;
+			return $user->name;
+		}
+	} catch (PDOException $e) {
+		qdb_die("Error retrieving user data: ".htmlentities($e->getMessage()).".");
 	}
 }
 
 function qdb_show($quote, $tags) {
+	global $user;
 	?>
 <p class="quote"><span class="header">
 <a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>:
-<a class="rateup" href="rate.php?id=<?=$quote->id?>&amp;rate=1" title="rate <?=$quote->id?> up">+</a>
+<a class="op rateup" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => 1))?>" title="rate #<?=$quote->id?> up">+</a>
 <em class="rating"><?=$quote->rating?></em>
-<a class="ratedown" href="rate.php?id=<?=$quote->id?>&amp;rate=-1" title="rate <?=$quote->id?> down">-</a>
-<a class="flag" href="rate.php?id=<?=$quote->id?>&amp;rate=0" title="flag <?=$quote->id?>">X</a>
+<a class="op ratedown" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => -1))?>" title="rate #<?=$quote->id?> down">-</a>
+<?
+	if ($user !== FALSE && $user->admin) {
+		?>
+		<a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => 1))?>" title="edit #<?=$quote->id?>">¶</a>
+		<?
+		if ($quote->flag) {
+			?>
+			<a class="op unflag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 0))?>" title="unflag #<?=$quote->id?>">!</a>
+			<?
+		} else {
+			?>
+			<a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 1))?>" title="flag #<?=$quote->id?>">?</a>
+			<?
+		}
+		if ($quote->hide) {
+			?>
+			<a class="op show" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 0))?>" title="show #<?=$quote->id?>">✓</a>
+			<?
+		} else {
+			?>
+			<a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 1))?>" title="hide #<?=$quote->id?>">…</a>
+			<?
+		}
+		?>
+		<a class="op del" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => 1))?>" title="delete #<?=$quote->id?>">✗</a>
+		<?
+	} else {
+		?>
+		<a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => 1))?>" title="flag #<?=$quote->id?>">?</a>
+		<?
+	}
+
+if ($user !== FALSE && $user->admin) {
+	$quser = qdb_get_user($quote->users_id);
+	if ($quser != "") {
+		?><span class="user"><?=htmlentities($quser)?></span>/<?
+	}
+	?><span class="ip"><?=$quote->ip?></span><?
+}
+?>
 </span><br><tt><?=nl2br(htmlentities($quote->quote));?></tt><?
 if ($tags !== FALSE) {
 	?><ul class="tags"><?
 	foreach ($tags as $tag) {
-		?><li><a href="?tags=<?=qdb_tags_qs($tag->id)?>"><?=htmlentities($tag->name)?></a></li><?
+		?><li><a href="?tags=<?=qdb_tags_qs_add($tag->id)?>"
+			title="add <?=htmlentities($tag->name)?> to tag filter"><?=htmlentities($tag->name)?></a></li><?
 	}
 	?></ul><?
 }
@@ -104,19 +237,17 @@ if ($tags !== FALSE) {
 	<?
 }
 
-function qdb_tags_sql() {
+function qdb_tags_list() {
 	$tags = array();
 	if (isset($_GET["tags"])) {
 		foreach (explode(" ", $_GET["tags"]) as $tag) {
 			if (qdb_digit($tag)) { $tags[] = $tag; }
 		}
 	}
-	if (count($tags) == 0) { return ""; }
-	sort($tags);
-	return implode(",", $tags);
+	return $tags;
 }
 
-function qdb_tags_qs($tagid) {
+function qdb_tags_qs_add($tagid) {
 	$tags = array();
 	if (isset($_GET["tags"])) {
 		foreach (explode(" ", $_GET["tags"]) as $tag) {
@@ -126,5 +257,37 @@ function qdb_tags_qs($tagid) {
 	if (!in_array($tagid, $tags)) { $tags[] = $tagid; }
 	sort($tags);
 	return implode("+", $tags);
+}
+
+function qdb_tags_qs_del($tagid) {
+	$tags = array();
+	if (isset($_GET["tags"])) {
+		foreach (explode(" ", $_GET["tags"]) as $tag) {
+			if (qdb_digit($tag)&& $tag != $tagid) { $tags[] = $tag; }
+		}
+	}
+	sort($tags);
+	return implode("+", $tags);
+}
+
+function qdb_tags_filter() {
+	global $db;
+
+	$tags_list = qdb_tags_list();
+	if (count($tags_list) > 0) {
+		?><ul class="tags"><?
+		try {
+			$stmt = $db->prepare("SELECT * FROM tags WHERE id IN (".implode(",", $tags_list).") ORDER BY name");
+			$stmt->execute();
+			while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
+				?><li><a href="?tags=<?=qdb_tags_qs_del($tag->id)?>"
+					title="remove <?=htmlentities($tag->name)?> from tag filter">!<?=htmlentities($tag->name)?></a></li><?
+			}
+			$stmt->closeCursor();
+		} catch (PDOException $e) {
+			qdb_die("Error retrieving tags data: ".htmlentities($e->getMessage()).".");
+		}
+		?></ul><hr><?
+	}
 }
 ?>
