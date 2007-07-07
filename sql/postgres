@@ -1,0 +1,62 @@
+CREATE TABLE users (
+	id BIGSERIAL,
+
+	-- data
+	name TEXT UNIQUE NOT NULL,
+	pass TEXT NOT NULL, -- lowercase sha1
+	admin BOOL NOT NULL DEFAULT FALSE,
+
+	PRIMARY KEY (id),
+	CONSTRAINT pass_hash CHECK (pass ~ '[0-9a-f]{40}')
+);
+
+CREATE TABLE quotes (
+	id BIGSERIAL,
+
+	-- data
+	quote TEXT UNIQUE NOT NULL,
+	rating INT NOT NULL DEFAULT 0,
+	flag BOOL NOT NULL DEFAULT FALSE,
+	hide BOOL NOT NULL DEFAULT FALSE,
+
+	-- metadata
+	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	users_id BIGINT,
+	ip INET,
+
+	PRIMARY KEY (id),
+	FOREIGN KEY (users_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
+);
+CREATE INDEX quotes_users_id ON quotes (users_id);
+CREATE INDEX quotes_ip ON quotes (ip);
+CREATE INDEX quotes_flag ON quotes (flag);
+CREATE INDEX quotes_hide ON quotes (hide);
+
+CREATE TABLE tags (
+	id BIGSERIAL,
+
+	-- data
+	name TEXT UNIQUE NOT NULL,
+
+	-- metadata
+	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	users_id BIGINT,
+	ip INET,
+
+	PRIMARY KEY (id),
+	FOREIGN KEY (users_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
+);
+CREATE INDEX tags_users_id ON tags (users_id);
+CREATE INDEX tags_ip ON tags (ip);
+
+CREATE TABLE quotes_tags (
+	-- data
+	quotes_id BIGINT NOT NULL,
+	tags_id BIGINT NOT NULL,
+
+	PRIMARY KEY (quotes_id, tags_id),
+	FOREIGN KEY (quotes_id) REFERENCES quotes (id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (tags_id) REFERENCES tags (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE INDEX quotes_tags_quotes_id ON quotes_tags (quotes_id);
+CREATE INDEX quotes_tags_tags_id ON quotes_tags (tags_id);
