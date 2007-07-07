@@ -25,7 +25,13 @@ qdb_header("Add Quote");
 
 $msg = NULL;
 
-if (isset($_POST["quote"])) { $_POST["quote"] = trim($_POST["quote"]); }
+if (isset($_POST["quote"])) {
+	$_POST["quote"] = trim($_POST["quote"]);
+	$_POST["quote"] = preg_replace('/[\x00-\x02\x04-\x09\x0B-\x0C\x0E-\x19]/', '', $_POST["quote"]);
+	$_POST["quote"] = preg_replace('/[\x03][0-9]{0,2}(,[0-9]{0,2})?/', '', $_POST["quote"]);
+	$_POST["quote"] = preg_replace('/[\x0D\x0A]/', '\n', $_POST["quote"]);
+	$_POST["quote"] = preg_replace('/[\x0D]/', '\n', $_POST["quote"]);
+}
 
 if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 	try {
@@ -44,7 +50,7 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 		$stmt->execute();
 		if ($stmt->rowCount() > 0) {
 			$id = $db->lastInsertId("quotes_id_seq");
-			qdb_ok('Added quote <a href="./?'.$id.'">'.$id.'</a>');
+			qdb_ok('Added quote <a href="./?'.$id.'">'.$id.'</a>.');
 			unset($_POST["quote"]);
 		} else {
 			qdb_err("Quote already exists.");

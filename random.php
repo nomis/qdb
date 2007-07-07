@@ -22,30 +22,10 @@
 include("inc/common.php");
 
 qdb_header("Random");
-
-try {
-	if (isset($_GET["minrating"]) && qdb_digit($_GET["minrating"])) {
-		$stmt = $db->prepare("SELECT * FROM quotes WHERE hide=FALSE AND rating>=:minrating ORDER BY RANDOM() LIMIT ".$config['perpage']);
-		$stmt->bindParam(":minrating", $_GET["minrating"]);
-	} else {
-		$stmt = $db->prepare("SELECT * FROM quotes WHERE hide=FALSE ORDER BY RANDOM() LIMIT ".$config['perpage']);
-	}
-	$stmt2 = $db->prepare("SELECT * FROM tags WHERE quotes_id=:id");
-
-	$stmt->execute();
-	while ($quote = $stmt->fetch(PDO::FETCH_OBJ)) {
-		$stmt2->bindParam(":id", $quote->id);
-		$stmt2->execute();
-		$tags = $stmt2->fetch(PDO::FETCH_OBJ);
-		$stmt2->closeCursor();
-
-		qdb_show($quote, tags);
-	}
-	$stmt->closeCursor();
-} catch (PDOException $e) {
-	qdb_die("Error retrieving quote: ".htmlentities($e->getMessage()).".");
+if (isset($_GET["minrating"]) && qdb_digit($_GET["minrating"])) {
+	qdb_getall_show("hide=FALSE AND rating>=".$_GET["minrating"], "RANDOM()");
+} else {
+	qdb_getall_show("hide=FALSE", "RANDOM()");
 }
-
-qdb_messages();
 qdb_footer();
 ?>
