@@ -6,14 +6,17 @@ CREATE TABLE users (
 	pass TEXT NOT NULL, -- lowercase sha1
 	admin BOOL NOT NULL DEFAULT FALSE,
 
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT pass_hash CHECK (pass ~ '[0-9a-f]{40}')
 );
 
 CREATE TABLE quotes (
 	id BIGSERIAL,
 
 	-- data
-	quote TEXT NOT NULL,
+	quote TEXT UNIQUE NOT NULL,
+	rating INT NOT NULL DEFAULT 0,
+	flag BOOL NOT NULL DEFAULT FALSE,
 	hide BOOL NOT NULL DEFAULT FALSE,
 
 	-- metadata
@@ -26,6 +29,7 @@ CREATE TABLE quotes (
 );
 CREATE INDEX quotes_users_id ON quotes (users_id);
 CREATE INDEX quotes_ip ON quotes (ip);
+CREATE INDEX quotes_flag ON quotes (flag);
 CREATE INDEX quotes_hide ON quotes (hide);
 
 CREATE TABLE tags (
@@ -54,3 +58,5 @@ CREATE TABLE quotes_tags (
 	FOREIGN KEY (quotes_id) REFERENCES quotes (id) ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (tags_id) REFERENCES tags (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+CREATE INDEX quotes_tags_quotes_id ON quotes_tags (quotes_id);
+CREATE INDEX quotes_tags_tags_id ON quotes_tags (tags_id);
