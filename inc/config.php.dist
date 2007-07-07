@@ -1,0 +1,15 @@
+<?
+define("QDB_CONFIG", TRUE);
+
+$name = "Quote Database";
+$top = 150;
+$perpage = 50;
+$autohide_anon = "FALSE";
+$autohide_user = "FALSE";
+$email_notify = array();
+$email_full = array();
+
+$db = "pgsql:";
+$user = NULL;
+$pass = NULL;
+?>
