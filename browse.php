@@ -22,6 +22,6 @@
 include("inc/common.php");
 
 qdb_header("Browse");
-qdb_getall_show("quotes.hide=FALSE", "id ASC");
+qdb_getall_show("quotes.hide=FALSE", array(), "id ASC");
 qdb_footer();
 ?>

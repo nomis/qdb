@@ -51,7 +51,7 @@ function qdb_get_show($id) {
 	qdb_messages();
 }
 
-function qdb_getall_show($where = "", $order = "", $limit = 0) {
+function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit = 0) {
 	global $db, $config;
 
 	?><dl class="tags"><?
@@ -70,7 +70,7 @@ function qdb_getall_show($where = "", $order = "", $limit = 0) {
 		$sql = "SELECT tags.id, tags.name, count(quotes_tags) as count FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 			." JOIN quotes ON quotes_tags.quotes_id=quotes.id";
-		if ($where != "") { $sql .= " WHERE $where"; }
+		if ($where != "") { $sql .= " WHERE ($where)"; }
 		$tags_list = qdb_tags_list();
 		if (count($tags_list) > 0) {
 			if ($where == "") { $sql .= " WHERE"; } else { $sql .= " AND"; }
@@ -84,6 +84,9 @@ function qdb_getall_show($where = "", $order = "", $limit = 0) {
 		}
 		$sql ." ORDER BY count DESC LIMIT 50";
 		$stmt = $db->prepare($sql);
+		foreach ($where_bind as $name => $value) {
+			$stmt->bindParam($name, $value);
+		}
 
 		$stmt->execute();
 		$tags = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -104,7 +107,7 @@ function qdb_getall_show($where = "", $order = "", $limit = 0) {
 			}
 
 			foreach ($tags as $tag) {
-				?><dt><a href="?tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"
+				?><dt><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"
 					title="add <?=htmlentities($tag->name)?> to tag filter"><?=htmlentities($tag->name)?></a></dt><?
 				?><dd><?=htmlentities($tag->count)?></dd><?
 			}
@@ -120,10 +123,11 @@ function qdb_getall_show($where = "", $order = "", $limit = 0) {
 
 	try {
 		$sql = "SELECT * FROM quotes";
-		if ($where != "") { $sql .= " WHERE $where"; }
+		if ($where != "") { $sql .= " WHERE ($where)"; }
 		$tags_list = qdb_tags_list();
 		if (count($tags_list) > 0) {
-			$sql .= " AND id IN (SELECT quotes_id FROM quotes_tags"
+			if ($where == "") { $sql .= " WHERE"; } else { $sql .= " AND"; }
+			$sql .= " id IN (SELECT quotes_id FROM quotes_tags"
 				." WHERE tags_id IN (".implode(",", $tags_list).") GROUP BY quotes_id"
 				." HAVING COUNT(quotes_id) = ".count($tags_list).")";
 		}
@@ -131,6 +135,9 @@ function qdb_getall_show($where = "", $order = "", $limit = 0) {
 		$sql .= " LIMIT ".($limit > 0 ? $limit : $config['perpage']);
 
 		$stmt = $db->prepare($sql);
+		foreach ($where_bind as $name => $value) {
+			$stmt->bindParam($name, $value);
+		}
 		$stmt2 = $db->prepare("SELECT tags.* FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 			." WHERE quotes_tags.quotes_id=:id");
@@ -228,7 +235,7 @@ if ($user !== FALSE && $user->admin) {
 if ($tags !== FALSE) {
 	?><ul class="tags"><?
 	foreach ($tags as $tag) {
-		?><li><a href="?tags=<?=qdb_tags_qs_add($tag->id)?>"
+		?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"
 			title="add <?=htmlentities($tag->name)?> to tag filter"><?=htmlentities($tag->name)?></a></li><?
 	}
 	?></ul><?
@@ -280,7 +287,7 @@ function qdb_tags_filter() {
 			$stmt = $db->prepare("SELECT * FROM tags WHERE id IN (".implode(",", $tags_list).") ORDER BY name");
 			$stmt->execute();
 			while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
-				?><li><a href="?tags=<?=qdb_tags_qs_del($tag->id)?>"
+				?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_del($tag->id)?>"
 					title="remove <?=htmlentities($tag->name)?> from tag filter">!<?=htmlentities($tag->name)?></a></li><?
 			}
 			$stmt->closeCursor();

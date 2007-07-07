@@ -23,9 +23,9 @@ include("inc/common.php");
 
 qdb_header("Random");
 if (isset($_GET["minrating"]) && qdb_digit($_GET["minrating"])) {
-	qdb_getall_show("hide=FALSE AND rating>=".$_GET["minrating"], "RANDOM()");
+	qdb_getall_show("quotes.hide=FALSE AND quotes.rating>=".$_GET["minrating"], array(), "RANDOM()");
 } else {
-	qdb_getall_show("hide=FALSE", "RANDOM()");
+	qdb_getall_show("quotes.hide=FALSE", array(), "RANDOM()");
 }
 qdb_footer();
 ?>

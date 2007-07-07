@@ -28,15 +28,23 @@
 	<li><a href="top.php">Top</a></li>
 	<li><a href="bottom.php">Bottom</a></li>
 	<li><strong><a href="addquote.php">Add Quote</a></strong></li>
-	<li>Search</li>
+	<li><a href="search.php">Search</a></li>
 	<? if ($user === FALSE) {
 		?><li><a href="login.php">Login</a></li><?
-	} else {
+	} ?>
+</ul>
+<? if ($user !== FALSE) {
+	?><ul class="menu">
+		<li>User: <ul class="menu">
+			<li><a xhref="password.php">Change Password</a></li>
+		</ul></li><?
 		if ($user->admin) {
 			?><li>Admin: <ul class="menu">
 				<li><a href="pending.php">Pending</a></li>
 				<li><a href="flagged.php">Flagged</a></li>
+				<li><a xhref="users.php">Users</a></li>
+				<li><a xhref="tags.php">Tags</a></li>
 			</ul></li><?
-		}
-	} ?>
-</ul>
+		} ?>
+	</ul><?
+} ?>

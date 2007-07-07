@@ -47,4 +47,25 @@ function qdb_secure($values) {
 
 	return $verifying ? ($hash == $_GET["hash"]) : $str;
 }
+
+
+$qdb_qs = array();
+
+function qdb_qs_preserve($name) {
+	global $qdb_qs;
+
+	$qdb_qs[] = $name;
+}
+
+function qdb_qs() {
+	global $qdb_qs;
+
+	$str = "";
+	foreach ($qdb_qs as $name) {
+		if (isset($_GET[$name])) {
+			$str .= $name."=".urlencode($_GET[$name])."&amp;";
+		}
+	}
+	return $str;
+}
 ?>

@@ -22,6 +22,6 @@
 include("inc/common.php");
 
 qdb_header("Bottom");
-qdb_getall_show("hide=FALSE", "rating ASC, id DESC");
+qdb_getall_show("hide=FALSE", array(), "rating ASC, id DESC");
 qdb_footer();
 ?>

@@ -25,7 +25,7 @@ qdb_header("Flagged");
 if ($user === FALSE || !$user->admin) {
 	?><p>You are not an admin!</p><?
 } else {
-	qdb_getall_show("flag=TRUE", "id ASC");
+	qdb_getall_show("quotes.flag=TRUE", array(), "id ASC");
 }
 qdb_footer();
 ?>
