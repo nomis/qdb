@@ -29,20 +29,33 @@ if (isset($_POST["quote"])) {
 
 if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 	try {
-		$stmt = $db->prepare("INSERT INTO quotes (quote, hide, users_id, ip) VALUES(:text, :hide, :userid, :ip)");
+		$exists = FALSE;
+		$stmt = $db->prepare("SELECT * FROM quotes WHERE quote=:text");
 		$stmt->bindParam(":text", $_POST["quote"]);
-		if ($user === FALSE) {
-			$stmt->bindParam(":userid", NULL);
-			$stmt->bindParam(":hide", $config['autohide_anon']);
-		} else {
-			$stmt->bindParam(":userid", $user->id);
-			$hide = $user->admin ? "FALSE" : $config['autohide_user'];
-			$stmt->bindParam(":hide", $hide);
-		}
-		$stmt->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
-
 		$stmt->execute();
 		if ($stmt->rowCount() > 0) {
+			qdb_err("Quote already exists.");
+			$exists = TRUE;
+		}
+		$stmt->closeCursor();
+
+		if (!$exists) {
+			$stmt = $db->prepare("INSERT INTO quotes (quote, hide, users_id, ip) VALUES(:text, :hide, :userid, :ip)");
+			$stmt->bindParam(":text", $_POST["quote"]);
+			if ($user === FALSE) {
+				$stmt->bindParam(":userid", NULL);
+				$stmt->bindParam(":hide", $config['autohide_anon']);
+			} else {
+				$stmt->bindParam(":userid", $user->id);
+				$hide = $user->admin ? "FALSE" : $config['autohide_user'];
+				$stmt->bindParam(":hide", $hide);
+			}
+			$stmt->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
+
+			$stmt->execute();
+		}
+
+		if (!$exists && $stmt->rowCount() > 0) {
 			$id = $db->lastInsertId("quotes_id_seq");
 			qdb_ok('Added quote <a href="./?'.$id.'" title="quote #'.$id.'">#'.$id.'</a>.');
 
@@ -122,8 +135,6 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 			}
 
 			unset($_POST["quote"]);
-		} else {
-			qdb_err("Quote already exists.");
 		}
 		$stmt->closeCursor();
 	} catch (PDOException $e) {
