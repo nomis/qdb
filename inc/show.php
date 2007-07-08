@@ -21,7 +21,7 @@ function qdb_get_show($id) {
 	global $db, $user;
 
 	try {
-		$stmt = $db->prepare("SELECT * FROM quotes WHERE id=:id");
+		$stmt = $db->prepare("SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM quotes WHERE id=:id");
 		$stmt->bindParam(":id", $id);
 
 		$stmt->execute();
@@ -33,7 +33,8 @@ function qdb_get_show($id) {
 		} else if ($quote->hide && ($user === FALSE || !$user->admin)) {
 			qdb_err("Quote #".$id." is hidden.");
 		} else {
-			$stmt = $db->prepare("SELECT tags.* FROM tags"
+			$stmt = $db->prepare("SELECT tags.*,"
+				." (SELECT users.name FROM users WHERE quotes_tags.users_id=users.id) AS users_name FROM tags"
 				." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 				." WHERE quotes_tags.quotes_id=:id");
 			$stmt->bindParam(":id", $id);
@@ -67,7 +68,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 	}
 
 	try {
-		$sql = "SELECT tags.id, tags.name, tags.users_id, tags.ip, count(quotes_tags) AS count FROM tags"
+		$sql = "SELECT tags.id, tags.name, tags.ip, (SELECT users.name FROM users WHERE tags.users_id=users.id) AS users_name, COUNT(quotes_tags) AS count FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 			." JOIN quotes ON quotes_tags.quotes_id=quotes.id";
 		if ($where != "") { $sql .= " WHERE ($where)"; }
@@ -78,7 +79,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 				." WHERE tags_id IN (".implode(",", $tags_list).") GROUP BY quotes_id"
 				." HAVING COUNT(quotes_id) = ".count($tags_list).")";
 		}
-		$sql .= " GROUP BY tags.id, tags.name, tags.users_id, tags.ip";
+		$sql .= " GROUP BY tags.id, tags.name, tags.ip, users_name";
 		if (count($tags_list) > 0) {
 			$sql .= " HAVING tags.id NOT IN (".implode(",", $tags_list).")";
 		}
@@ -122,7 +123,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 	qdb_tags_filter();
 
 	try {
-		$sql = "SELECT * FROM quotes";
+		$sql = "SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM quotes";
 		if ($where != "") { $sql .= " WHERE ($where)"; }
 		$tags_list = qdb_tags_list();
 		if (count($tags_list) > 0) {
@@ -138,7 +139,8 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 		foreach ($where_bind as $name => $value) {
 			$stmt->bindParam($name, $value);
 		}
-		$stmt2 = $db->prepare("SELECT tags.id, tags.name, quotes_tags.users_id, quotes_tags.ip FROM tags"
+		$stmt2 = $db->prepare("SELECT tags.id, tags.name, quotes_tags.ip,"
+			." (SELECT users.name FROM users WHERE quotes_tags.users_id=users.id) AS users_name FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 			." WHERE quotes_tags.quotes_id=:id");
 
@@ -155,34 +157,6 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 	} catch (PDOException $e) {
 		qdb_die($e);
 	}
-}
-
-function qdb_get_user($id) {
-	global $db, $usercache;
-
-	if ($id == NULL) { return ""; }
-
-	if (isset($usercache[$id])) {
-		return $usercache[$id]->name;
-	}
-
-	try {
-		$stmt = $db->prepare("SELECT * FROM users WHERE id=:id");
-		$stmt->bindParam(":id", $id);
-
-		$stmt->execute();
-		$user = $stmt->fetch(PDO::FETCH_OBJ);
-		$stmt->closeCursor();
-
-		if ($user !== FALSE) {
-			$usercache[$id] = $user;
-			return $user->name;
-		}
-	} catch (PDOException $e) {
-		qdb_die($e);
-	}
-
-	return NULL;
 }
 
 function qdb_get_tag($name) {
@@ -264,9 +238,8 @@ function qdb_show($quote, $tags, $single = FALSE) {
 	}
 
 if ($user !== FALSE && $user->admin) {
-	$quser = qdb_get_user($quote->users_id);
-	if ($quser != "") {
-		?><span class="user"><?=htmlentities($quser)?></span>/<?
+	if ($quote->users_name != NULL) {
+		?><span class="user"><?=htmlentities($quote->users_name)?></span>/<?
 	}
 	?><span class="ip"><?=$quote->ip?></span><?
 }
@@ -327,7 +300,7 @@ function qdb_tag_creator($tag) {
 	global $user;
 
 	if ($user === FALSE || !$user->admin) { return ""; }
-	return " [".htmlentities(qdb_get_user($tag->users_id))."/".$tag->ip."]";
+	return " [".($tag->users_name != NULL ? htmlentities($tag->users_name)."/" : "").$tag->ip."]";
 }
 
 function qdb_tags_filter() {
