@@ -82,7 +82,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 		if (count($tags_list) > 0) {
 			$sql .= " HAVING tags.id NOT IN (".implode(",", $tags_list).")";
 		}
-		$sql ." ORDER BY count DESC LIMIT 50";
+		$sql ." ORDER BY count DESC LIMIT ".$config['tags_cloudsize'];
 		$stmt = $db->prepare($sql);
 		foreach ($where_bind as $name => $value) {
 			$stmt->bindParam($name, $value);
