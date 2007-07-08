@@ -37,7 +37,7 @@ if (isset($_GET["q1"])) {
 ?>
 <p>Tsearch2 &ndash; use &amp; for AND, | for OR, and ! for NOT, etc. &ndash; <strong>no spaces and no wildcards</strong>.<br>
 Regexp &ndash; <a href="http://www.postgresql.org/docs/8.2/static/functions-matching.html">SQL regular expression</a> (% for wildcard *, _ for wildcard ?).</p>
-<form method="get">
+<form method="get" action="search.php">
 <label for="q1">Tsearch2</label>:
 <input type="hidden" name="tags" value="<?=isset($_GET["tags"]) ? htmlentities($_GET["tags"]) : ""?>">
 <input type="text" name="q1" value="<?=isset($_GET["q1"]) ? htmlentities($_GET["q1"]) : ""?>" size="50">

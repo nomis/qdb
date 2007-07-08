@@ -24,17 +24,13 @@ qdb_header("Add Quote");
 $msg = NULL;
 
 if (isset($_POST["quote"])) {
-	$_POST["quote"] = trim($_POST["quote"]);
-	$_POST["quote"] = preg_replace('/[\x00-\x02\x04-\x09\x0B-\x0C\x0E-\x19]/', '', $_POST["quote"]);
-	$_POST["quote"] = preg_replace('/\x03[0-9]{0,2}(,[0-9]{0,2})?/', '', $_POST["quote"]);
-	$_POST["quote"] = preg_replace('/\x0D\x0A/', "\n", $_POST["quote"]);
-	$_POST["quote"] = preg_replace('/\x0D/', "\n", $_POST["quote"]);
+	$_POST["quote"] = qdb_sanitise($_POST["quote"]);
 }
 
 if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 	try {
-		$stmt = $db->prepare("INSERT INTO quotes (quote, hide, users_id, ip) VALUES(:quote, :hide, :userid, :ip)");
-		$stmt->bindParam(":quote", $_POST["quote"]);
+		$stmt = $db->prepare("INSERT INTO quotes (quote, hide, users_id, ip) VALUES(:text, :hide, :userid, :ip)");
+		$stmt->bindParam(":text", $_POST["quote"]);
 		if ($user === FALSE) {
 			$stmt->bindParam(":userid", NULL);
 			$stmt->bindParam(":hide", $config['autohide_anon']);
@@ -133,12 +129,14 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 	} catch (PDOException $e) {
 		qdb_die($e);
 	}
+} else if (isset($_POST["quote"])) {
+	qdb_err("Quotes cannot be empty.");
 }
 
 qdb_messages();
 ?>
 <p>Please remove timestamps unless necessary.</p>
-<form method="post">
+<form method="post" action="addquote.php">
 <textarea name="quote" rows="5" cols="80">
 <?=isset($_POST["quote"]) ? htmlentities($_POST["quote"]) : ""?>
 </textarea><br>

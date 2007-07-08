@@ -74,7 +74,7 @@ if ($user === FALSE || !$user->admin) {
 			<td class="small"><?=($tag->users_name != NULL ? htmlentities($tag->users_name)."/" : "").$tag->ip?></td>
 			<td align="center"><?=$tag->count?></td>
 			<td align="right">
-				<form class="tags" method="post">
+				<form class="tags" method="post" action="tags.php">
 				<input type="hidden" name="id" value="<?=$tag->id?>">
 				<input type="text" name="name" value="<?=htmlentities($tag->name)?>">
 				<input type="submit" name="action" value="Rename">

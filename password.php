@@ -54,7 +54,7 @@ if (isset($_POST["pass0"]) && isset($_POST["pass1"]) && isset($_POST["pass2"])) 
 
 if ($disp) {
 	?><p>Enter old password, and new password twice:</p>
-	<form method="post">
+	<form method="post" action="password.php">
 	<label for="pass0">Old</label>: <input name="pass0" type="password"><br>
 	<label for="pass1">New</label>: <input name="pass1" type="password"><br>
 	<label for="pass2">Repeat</label>: <input name="pass2" type="password"><br>

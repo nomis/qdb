@@ -83,6 +83,15 @@ function qdb_footer() {
 	include("footer.php");
 }
 
+function qdb_sanitise($str) {
+	$str = trim($str);
+	$str = preg_replace('/[\x00-\x02\x04-\x09\x0B-\x0C\x0E-\x19]/', '', $str);
+	$str = preg_replace('/\x03[0-9]{0,2}(,[0-9]{0,2})?/', '', $str);
+	$str = preg_replace('/\x0D\x0A/', "\n", $str);
+	$str = preg_replace('/\x0D/', "\n", $str);
+	return $str;
+}
+
 include("auth.php");
 include("show.php");
 include("query.php");

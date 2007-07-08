@@ -36,7 +36,7 @@ function qdb_get_show($id) {
 			$stmt = $db->prepare("SELECT tags.*,"
 				." (SELECT users.name FROM users WHERE quotes_tags.users_id=users.id) AS users_name FROM tags"
 				." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
-				." WHERE quotes_tags.quotes_id=:id");
+				." WHERE quotes_tags.quotes_id=:id ORDER BY tags.name ASC");
 			$stmt->bindParam(":id", $id);
 
 			$stmt->execute();
@@ -142,7 +142,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 		$stmt2 = $db->prepare("SELECT tags.id, tags.name, quotes_tags.ip,"
 			." (SELECT users.name FROM users WHERE quotes_tags.users_id=users.id) AS users_name FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
-			." WHERE quotes_tags.quotes_id=:id");
+			." WHERE quotes_tags.quotes_id=:id ORDER BY tags.name ASC");
 
 		$stmt->execute();
 		while ($quote = $stmt->fetch(PDO::FETCH_OBJ)) {
