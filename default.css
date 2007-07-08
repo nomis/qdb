@@ -42,6 +42,7 @@ form.quote, form.tags, form.users, form.quick { display: inline; }
 form.quote input, form.tags input, form.users input, form.quick input { font-size: 0.6em; }
 
 td.small { font-size: 0.8em; }
+td.verysmall { font-size: 0.7em; }
 table.users tr.moo, table.tags tr.moo { color: InfoText; background-color: InfoBackground; }
 
 

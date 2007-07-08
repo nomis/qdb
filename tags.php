@@ -84,8 +84,8 @@ if ($user === FALSE || !$user->admin) {
 		$i = 0;
 		while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
 			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><td><?=qdb_htmlentities($tag->name)?></td>
-			<td><?=date("Y-m-d H:i:s", strtotime($tag->ts))?></td>
-			<td class="small"><?=($tag->users_name != NULL ? qdb_htmlentities($tag->users_name)."/" : "").$tag->ip?></td>
+			<td class="small"><?=str_replace(" ", "&nbsp;", date("Y-m-d H:i:s", strtotime($tag->ts)))?></td>
+			<td class="verysmall"><?=($tag->users_name != NULL ? qdb_htmlentities($tag->users_name)."/" : "").$tag->ip?></td>
 			<td align="center"><?=$tag->count?></td>
 			<td align="right">
 				<form class="tags" method="post" action="tags.php">
