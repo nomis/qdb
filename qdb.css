@@ -37,7 +37,9 @@ em.rating { font-style: normal; }
 .op { padding: 0 0.5em 0 0.5em; text-decoration: none;
 background-color: ThreeDFace; border-width: 1px; border-style: solid;
 border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
-.quote .header { font-size: 0.8em; }
+.header { font-size: 0.8em; color: MenuText; background-color: Menu; padding-top: 1px; padding-bottom: 1px; }
+.textsingu, .textmulti { border-width: 0 1px 1px 1px; border-style: solid; border-color: Menu; }
+.textmulti { max-height: 15em; overflow: auto; }
 .ratedown { margin-right: 1em; }
 .del { margin-right: 1em; }
 .user { font-weight: bold; }

@@ -26,9 +26,9 @@ $msg = NULL;
 if (isset($_POST["quote"])) {
 	$_POST["quote"] = trim($_POST["quote"]);
 	$_POST["quote"] = preg_replace('/[\x00-\x02\x04-\x09\x0B-\x0C\x0E-\x19]/', '', $_POST["quote"]);
-	$_POST["quote"] = preg_replace('/[\x03][0-9]{0,2}(,[0-9]{0,2})?/', '', $_POST["quote"]);
-	$_POST["quote"] = preg_replace('/[\x0D\x0A]/', '\n', $_POST["quote"]);
-	$_POST["quote"] = preg_replace('/[\x0D]/', '\n', $_POST["quote"]);
+	$_POST["quote"] = preg_replace('/\x03[0-9]{0,2}(,[0-9]{0,2})?/', '', $_POST["quote"]);
+	$_POST["quote"] = preg_replace('/\x0D\x0A/', "\n", $_POST["quote"]);
+	$_POST["quote"] = preg_replace('/\x0D/', "\n", $_POST["quote"]);
 }
 
 if (isset($_POST["quote"]) && $_POST["quote"] != "") {

@@ -42,7 +42,7 @@ function qdb_get_show($id) {
 			$tags = $stmt->fetchAll(PDO::FETCH_OBJ);
 			$stmt->closeCursor();
 
-			qdb_show($quote, $tags);
+			qdb_show($quote, $tags, TRUE);
 		}
 	} catch (PDOException $e) {
 		qdb_die("Error retrieving quote: ".htmlentities($e->getMessage()).".");
@@ -223,10 +223,10 @@ function qdb_del_tag($name) {
 	}
 }
 
-function qdb_show($quote, $tags) {
+function qdb_show($quote, $tags, $single = FALSE) {
 	global $user, $config;
 	?>
-<p class="quote"><span class="header">
+<p class="quote"><div class="header">
 <a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>:
 <a class="op rateup" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => 1))?>" title="rate #<?=$quote->id?> up">+</a>
 <em class="rating"><?=$quote->rating?></em>
@@ -271,7 +271,7 @@ if ($user !== FALSE && $user->admin) {
 	?><span class="ip"><?=$quote->ip?></span><?
 }
 ?>
-</span><br><tt><?=nl2br(htmlentities($quote->quote));?></tt><?
+</div><div class="text<?=$single ? "singu" : "multi"?>"><tt><?=nl2br(htmlentities($quote->quote));?></tt></div><?
 if ($tags !== FALSE) {
 	?><ul class="tags"><?
 	foreach ($tags as $tag) {
