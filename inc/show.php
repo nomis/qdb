@@ -236,7 +236,7 @@ function qdb_show($quote, $tags) {
 <?
 	if ($user !== FALSE && $user->admin) {
 		?>
-		<a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => 1))?>" title="edit #<?=$quote->id?>">&para;</a>
+		<a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => 1))?>" title="edit #<?=$quote->id?>">&#x00B6;</a>
 		<?
 		if ($quote->flag) {
 			?>
@@ -253,7 +253,7 @@ function qdb_show($quote, $tags) {
 			<?
 		} else {
 			?>
-			<a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 1))?>" title="hide #<?=$quote->id?>">&hellip;</a>
+			<a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => 1))?>" title="hide #<?=$quote->id?>">&#x2026;</a>
 			<?
 		}
 		?>
