@@ -200,8 +200,8 @@ function qdb_del_tag($name) {
 function qdb_show($quote, $tags, $single = FALSE) {
 	global $user, $config;
 	?>
-<p class="quote"><div class="header">
-<a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>:
+<div class="quote"><p class="quote">
+<div class="header"><a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>:
 <a class="op rateup" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => 1))?>" title="rate #<?=$quote->id?> up">+</a>
 <em class="rating"><?=$quote->rating?></em>
 <a class="op ratedown" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => -1))?>" title="rate #<?=$quote->id?> down">-</a>
@@ -238,10 +238,11 @@ function qdb_show($quote, $tags, $single = FALSE) {
 	}
 
 if ($user !== FALSE && $user->admin) {
+	?><span class="userandip"><?
 	if ($quote->users_name != NULL) {
 		?><span class="user"><?=qdb_htmlentities($quote->users_name)?></span>/<?
 	}
-	?><span class="ip"><?=$quote->ip?></span><?
+	?><span class="ip"><?=$quote->ip?></span></span><?
 }
 ?>
 </div><div class="text<?=$single ? "singu" : "multi"?>"><tt><?=nl2br(qdb_htmlentities($quote->quote));?></tt></div><?
@@ -263,7 +264,7 @@ if (!$config['tags_useronly'] || $user !== FALSE) {
 	<input type="text" name="tagset"><input type="submit" value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags">
 	</form><?
 }
-?></p><br><br>
+?></p></div>
 	<?
 }
 

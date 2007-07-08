@@ -1,4 +1,4 @@
-html { margin-left: 10%; margin-right: 10%; }
+html { margin-left: 10%; margin-right: 10%; font-family: 'Tahoma', sans-serif; }
 #top, #bottom { color: CaptionText; background-color: ActiveCaption;
 border-width: 1px; border-style: solid;
 border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight; }
@@ -27,22 +27,6 @@ ul.msgs li { padding: 0 0.2em 0 0.2em; color: #000; }
 ul.msgs li.ok { background-color: #9f9; }
 ul.msgs li.err { background-color: #f99; }
 
-em.rating { font-style: normal; }
-.rating:before { content: '('; }
-.rating:after { content: ')'; }
-/*
-	.rateup:before, .ratedown:before, .flag:before, .unflag:before, .del:before { content: '['; }
-	.rateup:after, .ratedown:after, .flag:after, .unflag:after, .del:after { content: ']'; }
-*/
-.op { padding: 0 0.5em 0 0.5em; text-decoration: none;
-background-color: ThreeDFace; border-width: 1px; border-style: solid;
-border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
-.header { font-size: 0.8em; color: MenuText; background-color: Menu; padding-top: 1px; padding-bottom: 1px; }
-.textsingu, .textmulti { border-width: 0 1px 1px 1px; border-style: solid; border-color: Menu; }
-.textmulti { max-height: 15em; overflow: auto; }
-.ratedown { margin-right: 1em; }
-.del { margin-right: 1em; }
-.user { font-weight: bold; }
 ul.tags { list-style: none; margin: 0; padding: 0; display: inline; }
 ul.tags li { margin: 0; padding: 0 0.2em 0 0.2em; font-size: 0.7em; display: inline; }
 ul.tags li:after { content: ','; }
@@ -59,3 +43,32 @@ form.quote input, form.tags input, form.users input, form.quick input { font-siz
 
 td.small { font-size: 0.8em; }
 table.users tr.moo, table.tags tr.moo { color: InfoText; background-color: InfoBackground; }
+
+
+div.quote:hover .header { color: MenuText; background-color: Menu; }
+
+div.quote .op { padding: 0 0.5em 0 0.5em; text-decoration: none;
+border-width: 1px; border-style: solid; border-color: transparent; }
+div.quote:hover .op { background-color: ThreeDFace;
+border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
+
+#content div.quote p { margin: 0; padding: 0; }
+div.quote { margin: 0 0 1.5em 0; }
+div.quote .textmulti, div.quote .textsingu { font-size: 9pt;
+font-family: 'Courier New', 'Courier', monospace; }
+div.quote tt { margin: 0; }
+div.quote em.rating { font-style: normal; }
+div.quote .rating:before { content: '('; }
+div.quote .rating:after { content: ')'; }
+div.quote .header { font-size: 0.8em; padding-top: 1px; padding-bottom: 1px; }
+div.quote .textmulti { max-height: 15em; overflow: auto; }
+div.quote .ratedown { margin-right: 1em; }
+div.quote .del { margin-right: 1em; }
+div.quote .user { font-weight: bold; }
+
+div.quote .textsingu, div.quote .textmulti { border-width: 0 1px 1px 1px;
+border-style: solid; border-color: transparent; }
+div.quote:hover .textsingu, div.quote:hover .textmulti { border-color: Menu; }
+
+div.quote form, div.quote .userandip, div.quote .op { visibility: hidden; }
+div.quote:hover form, div.quote:hover .userandip, div.quote:hover .op, div.quote .rateup, div.quote .ratedown { visibility: visible; }
