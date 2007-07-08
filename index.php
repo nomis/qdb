@@ -24,6 +24,9 @@ if ($_SERVER["QUERY_STRING"] != "" && qdb_digit($_SERVER["QUERY_STRING"])) {
 	qdb_get_show($_SERVER["QUERY_STRING"]);
 } else {
 	qdb_header();
+	if (is_readable("home.php")) {
+		include("home.php");
+	} else {
 ?>
 <p>
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
@@ -53,6 +56,7 @@ purus. Sed aliquet mi a dui. Aenean sit amet neque sit amet
 metus semper ornare.
 </p>
 <?
+	}
 }
 qdb_footer();
 ?>

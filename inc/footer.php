@@ -20,5 +20,5 @@
 ?>
 </div>
 <? include("menu.php")?>
-<div id="bottom"><p>QDB 2.0<!-- http://svn.lp0.eu/simon/qdb/ --></p></div>
+<div id="bottom"><p><a href="qdb-2_0.tar.gz">QDB 2.0</a><!-- http://svn.lp0.eu/simon/qdb/ --></p></div>
 </body></html>

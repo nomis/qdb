@@ -1,0 +1,13 @@
+* Will currently only work with postgresql (load tsearch2 first),
+  don't be fooled by the use of PDO...
+* SQL creation script(s) are in sql/
+
+* Copy inc/config.php.dist to inc/config.php and change the 'secret' value!
+* You will need to manually insert your first user.
+
+The AGPLv3 prohibits running modified versions without providing the source code,
+the inc/config.php file is not considered part of a derivative work providing that
+the inc/config.php.dist file is also kept up to date. A GNU makefile is included to
+aid creation of an archive from SVN.
+
+$Id$
