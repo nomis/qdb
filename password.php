@@ -46,7 +46,7 @@ if (isset($_POST["pass0"]) && isset($_POST["pass1"]) && isset($_POST["pass2"])) 
 			$stmt->closeCursor();
 			$db->commit();
 		} catch (PDOException $e) {
-			qdb_die("Error changing password: ".htmlentities($e->getMessage()).".");
+			qdb_die($e);
 		}
 	}
 	qdb_messages();

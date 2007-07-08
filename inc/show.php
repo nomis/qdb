@@ -45,7 +45,7 @@ function qdb_get_show($id) {
 			qdb_show($quote, $tags, TRUE);
 		}
 	} catch (PDOException $e) {
-		qdb_die("Error retrieving quote: ".htmlentities($e->getMessage()).".");
+		qdb_die($e);
 	}
 
 	qdb_messages();
@@ -115,7 +115,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 
 		$stmt->closeCursor();
 	} catch (PDOException $e) {
-		qdb_die("Error getting tag list: ".htmlentities($e->getMessage()).".");
+		qdb_die($e);
 	}
 	?></dl><br><?
 
@@ -153,7 +153,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 		}
 		$stmt->closeCursor();
 	} catch (PDOException $e) {
-		qdb_die("Error retrieving quotes: ".htmlentities($e->getMessage()).".");
+		qdb_die($e);
 	}
 }
 
@@ -179,7 +179,7 @@ function qdb_get_user($id) {
 			return $user->name;
 		}
 	} catch (PDOException $e) {
-		qdb_die("Error retrieving user data: ".htmlentities($e->getMessage()).".");
+		qdb_die($e);
 	}
 
 	return NULL;
@@ -207,7 +207,7 @@ function qdb_get_tag($name) {
 			return $tag->id;
 		}
 	} catch (PDOException $e) {
-		qdb_die("Error retrieving tag data: ".htmlentities($e->getMessage()).".");
+		qdb_die($e);
 	}
 
 	return NULL;
@@ -345,7 +345,7 @@ function qdb_tags_filter() {
 			}
 			$stmt->closeCursor();
 		} catch (PDOException $e) {
-			qdb_die("Error retrieving tags data: ".htmlentities($e->getMessage()).".");
+			qdb_die($e);
 		}
 		?></ul><hr><?
 	}

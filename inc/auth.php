@@ -43,7 +43,7 @@ if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 			$stmt->closeCursor();
 		}
 	} catch (PDOException $e) {
-		qdb_die("Error checking username and password: ".htmlentities($e->getMessage()).".");
+		qdb_die($e);
 	}
 
 	if ($user === FALSE) { qdb_auth(); }

@@ -50,8 +50,10 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 			$id = $db->lastInsertId("quotes_id_seq");
 			qdb_ok('Added quote <a href="./?'.$id.'" title="quote #'.$id.'">#'.$id.'</a>.');
 
+			$oktags = "";
 			if (!$config['tags_useronly'] || $user !== FALSE) {
 				$stmt_ins = $db->prepare("INSERT INTO tags (name, users_id, ip) VALUES(:name, :userid, :ip)");
+				$stmt_get = $db->prepare("SELECT * FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
 				$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, users_id, ip) VALUES(:quoteid, :tagid, :userid, :ip)");
 
 				foreach (explode(" ", $_POST["tags"]) as $tag) {
@@ -80,24 +82,48 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 						}
 						$tagid = $db->lastInsertId("tags_id_seq");
 						$stmt_ins->closeCursor();
+
+						qdb_put_tag($tag, $tagid);
 					}
 
-					$stmt_add->bindParam(":quoteid", $id);
-					$stmt_add->bindParam(":tagid", $tagid);
-					if ($user === NULL) {
-						$stmt_add->bindParam(":userid", NULL);
+					$stmt_get->bindParam(":quoteid", $_POST["id"]);
+					$stmt_get->bindParam(":tagid", $tagid);
+					$stmt_get->execute();
+					if ($stmt_get->rowCount() > 0) {
+						qdb_ok("Tag '".htmlentities($tag)."' already set.");
 					} else {
-						$stmt_add->bindParam(":userid", $user->id);
+						$stmt_add->bindParam(":quoteid", $_POST["id"]);
+						$stmt_add->bindParam(":tagid", $tagid);
+						if ($user === NULL) {
+							$stmt_add->bindParam(":userid", NULL);
+						} else {
+							$stmt_add->bindParam(":userid", $user->id);
+						}
+						$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
+						$stmt_add->execute();
+						if ($stmt_add->rowCount() > 0) {
+							qdb_ok("Tag '".htmlentities($tag)."' added.");
+						}
+						$stmt_add->closeCursor();
 					}
-					$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
-					$stmt_add->execute();
-					if ($stmt_add->rowCount() > 0) {
-						qdb_ok("Tag '".htmlentities($tag)."' added.");
-					} else {
-						qdb_err("Tag '".htmlentities($tag)."' already set.");
-					}
-					$stmt_add->closeCursor();
+					$stmt_get->closeCursor();
 				}
+			}
+			$db->commit();
+
+			foreach ($config['email_notify'] as $email) {
+				mail($email, $config['email_url'].'?'.$id, $oktags == "" ? "" : "(".$oktags.")");
+			}
+
+			foreach ($config['email_full'] as $email) {
+				mail($email, "Quote #".$id,
+					$config['email_url'].'?'.$id."\r\n\r\n"
+					."From: ".($user === FALSE ? "" : htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
+					.($oktags == "" ? "" : "Tags: ".$oktags."\r\n")
+					."\r\n".str_replace("\n","\r\n",$_POST["quote"])
+					."\r\n\r\n-- \r\n".$config['name']."\r\n",
+				"Content-Transfer-Encoding: 8bit\r\n"
+				."Content-Type: text/plain; charset=UTF-8");
 			}
 
 			unset($_POST["quote"]);
@@ -105,7 +131,6 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 			qdb_err("Quote already exists.");
 		}
 		$stmt->closeCursor();
-		$db->commit();
 	} catch (PDOException $e) {
 		qdb_err("Error adding quote: ".$e->getMessage());
 	}

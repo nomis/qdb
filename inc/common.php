@@ -28,8 +28,10 @@ $config = array(
 	'perpage'        => "Quotes displayed per page",
 	'autohide_anon'  => "Hide all new anonymous quotes automatically",
 	'autohide_user'  => "Hide all new user quotes automatically",
-	'email_notify'   => "Notification email",
-	'email_full'     => "Full email",
+	'email_url'      => "Base url for quotes",
+	'email_notify'   => "Quote notification email addresses",
+	'email_full'     => "Full quote notification email addresses",
+	'email_admin'    => "Admin email addresses (for errors)",
 	'tags_useronly'  => "Only allow users to create new tags",
 	'tags_regexp'    => "Regular expression of valid tags",
 	'tags_cloudsize' => "Number of tags to show in tag cloud",
@@ -41,7 +43,7 @@ foreach ($config as $option => $msg) {
 include("config.php");
 foreach ($config as $option => $msg) {
 	if (!isset($$option)) {
-		qdb_die("Missing configuration option '$option' ($msg).");
+		die("Missing configuration option '$option' ($msg).");
 	} else {
 		$config[$option] = $$option;
 		unset($$option);
@@ -50,17 +52,19 @@ foreach ($config as $option => $msg) {
 
 try {
 	$db = new PDO($config['db'], $user, $pass);
+	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$user = NULL;
 	$pass = NULL;
 	$db->exec("SELECT set_curcfg('default')");
 	$db->beginTransaction();
 } catch (PDOException $e) {
-	qdb_die("Error connecting to database: ".htmlentities($e->getMessage()).".");
+	qdb_die($e);
 }
 
 function qdb_header($title = NULL) {
-	global $config, $user, $pending, $flagged;
+	global $config, $user, $pending, $flagged, $header;
 	include("header.php");
+	$header = TRUE;
 }
 
 function qdb_footer() {

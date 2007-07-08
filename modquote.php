@@ -77,7 +77,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 
 				$db->commit();
 			} catch (PDOException $e) {
-				qdb_die("Error rating quote: ".htmlentities($e->getMessage()).".");
+				qdb_die($e);
 			}
 		}
 		qdb_messages();
@@ -104,7 +104,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				$stmt->closeCursor();
 				$db->commit();
 			} catch (PDOException $e) {
-				qdb_die("Error ".($_GET["flag"] == 0 ? "un" : "")."flagging quote: ".htmlentities($e->getMessage()).".");
+				qdb_die($e);
 			}
 		}
 		qdb_messages();
@@ -131,7 +131,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				$stmt->closeCursor();
 				$db->commit();
 			} catch (PDOException $e) {
-				qdb_die("Error ".($_GET["hide"] == 0 ? "showing" : "hiding")." quote: ".htmlentities($e->getMessage()).".");
+				qdb_die($e);
 			}
 		}
 		qdb_messages();
@@ -153,7 +153,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				$stmt->closeCursor();
 				$db->commit();
 			} catch (PDOException $e) {
-				qdb_die("Error ".($_GET["flag"] == 0 ? "un" : "")."flagging quote: ".htmlentities($e->getMessage()).".");
+				qdb_die($e);
 			}
 		}
 		qdb_messages();
@@ -167,6 +167,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		} else {
 			try {
 				$stmt_ins = $db->prepare("INSERT INTO tags (name, users_id, ip) VALUES(:name, :userid, :ip)");
+				$stmt_get = $db->prepare("SELECT * FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
 				$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, users_id, ip) VALUES(:quoteid, :tagid, :userid, :ip)");
 				$stmt_del = $db->prepare("DELETE FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
 				$stmt_clr = $db->prepare("DELETE FROM tags WHERE id=:tagid AND NOT EXISTS"
@@ -204,21 +205,27 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 							$stmt_ins->closeCursor();
 						}
 
-						$stmt_add->bindParam(":quoteid", $_POST["id"]);
-						$stmt_add->bindParam(":tagid", $tagid);
-						if ($user === NULL) {
-							$stmt_add->bindParam(":userid", NULL);
+						$stmt_get->bindParam(":quoteid", $_POST["id"]);
+						$stmt_get->bindParam(":tagid", $tagid);
+						$stmt_get->execute();
+						if ($stmt_get->rowCount() > 0) {
+							qdb_ok("Tag '".htmlentities($tag)."' already set.");
 						} else {
-							$stmt_add->bindParam(":userid", $user->id);
+							$stmt_add->bindParam(":quoteid", $_POST["id"]);
+							$stmt_add->bindParam(":tagid", $tagid);
+							if ($user === NULL) {
+								$stmt_add->bindParam(":userid", NULL);
+							} else {
+								$stmt_add->bindParam(":userid", $user->id);
+							}
+							$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
+							$stmt_add->execute();
+							if ($stmt_add->rowCount() > 0) {
+								qdb_ok("Tag '".htmlentities($tag)."' added.");
+							}
+							$stmt_add->closeCursor();
 						}
-						$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
-						$stmt_add->execute();
-						if ($stmt_add->rowCount() > 0) {
-							qdb_ok("Tag '".htmlentities($tag)."' added.");
-						} else {
-							qdb_err("Tag '".htmlentities($tag)."' already set.");
-						}
-						$stmt_add->closeCursor();
+						$stmt_get->closeCursor();
 					} else {
 						if ($tagid == NULL) {
 							qdb_err("Tag '".htmlentities($tag)."' does not exist.");
@@ -243,7 +250,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				}
 				$db->commit();
 			} catch (PDOException $e) {
-				qdb_die("Error modifying tags for quote: ".htmlentities($e->getMessage()).".");
+				qdb_die($e);
 			}
 		}
 		qdb_messages();

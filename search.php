@@ -53,6 +53,8 @@ $ok = TRUE;
 
 if (isset($_GET["q1"]) && $_GET["q1"] != "") {
 	try {
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
 		$stmt = $db->prepare("SELECT to_tsquery('default', :search)");
 		$stmt->bindParam(":search", $_GET["q1"]);
 
@@ -65,8 +67,10 @@ if (isset($_GET["q1"]) && $_GET["q1"] != "") {
 			$ok = FALSE;
 		}
 		$stmt->closeCursor();
+
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	} catch (PDOException $e) {
-		qdb_die("Error checking query: ".htmlentities($e->getMessage()).".");
+		qdb_die($e);
 	}
 }
 
