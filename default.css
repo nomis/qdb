@@ -32,7 +32,7 @@ ul.tags li { margin: 0; padding: 0 0.2em 0 0.2em; font-size: 0.7em; display: inl
 ul.tags li:after { content: ','; }
 ul.tags li:last-child:after { content: ''; }
 
-dl.tags { margin: 0; padding: 0; }
+dl.tags { margin: 0; padding: 0; font-size: 10pt; }
 dl.tags dt, dl.tags dd { display: inline; margin: 0; padding: 0; }
 dl.tags dd:before { content: ' ('; }
 dl.tags dd:after { content: '), '; }
