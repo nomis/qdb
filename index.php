@@ -19,6 +19,10 @@
 */
 include("inc/common.php");
 
+if (isset($_POST["id"]) && qdb_digit($_POST["id"])) {
+	header("Location: ".$config['base_url']."?".$_POST["id"]);
+}
+
 if ($_SERVER["QUERY_STRING"] != "" && qdb_digit($_SERVER["QUERY_STRING"])) {
 	qdb_header("#".$_SERVER["QUERY_STRING"]);
 	qdb_get_show($_SERVER["QUERY_STRING"]);

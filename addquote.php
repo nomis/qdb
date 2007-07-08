@@ -122,12 +122,12 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 			$db->commit();
 
 			foreach ($config['email_notify'] as $email) {
-				mail($email, $config['email_url'].'?'.$id, count($oktags) == 0 ? "" : "(".implode(" ", $oktags).")");
+				mail($email, $config['base_url'].'?'.$id, count($oktags) == 0 ? "" : "(".implode(" ", $oktags).")");
 			}
 
 			foreach ($config['email_full'] as $email) {
 				mail($email, "Quote #".$id,
-					$config['email_url'].'?'.$id."\r\n\r\n"
+					$config['base_url'].'?'.$id."\r\n\r\n"
 					."From: ".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
 					.(count($oktags) == 0 ? "" : "Tags: ".implode(" ", $oktags)."\r\n")
 					."\r\n".str_replace("\n","\r\n",$_POST["quote"])

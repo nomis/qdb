@@ -30,6 +30,9 @@
 	<? if ($user === FALSE) {
 		?><li><a href="login.php">Login</a></li><?
 	} ?>
+	<li><form class="quick" method="post" action="index.php">
+	<label for="text">#</label><input type="text" name="id" size="3">
+	</form></li>
 </ul>
 <? if ($user !== FALSE) {
 	?><ul class="menu">
