@@ -69,7 +69,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 	}
 
 	try {
-		$sql = "SELECT tags.id, tags.name, count(quotes_tags) AS count FROM tags"
+		$sql = "SELECT tags.id, tags.name, tags.users_id, tags.ip, count(quotes_tags) AS count FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 			." JOIN quotes ON quotes_tags.quotes_id=quotes.id";
 		if ($where != "") { $sql .= " WHERE ($where)"; }
@@ -80,7 +80,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 				." WHERE tags_id IN (".implode(",", $tags_list).") GROUP BY quotes_id"
 				." HAVING COUNT(quotes_id) = ".count($tags_list).")";
 		}
-		$sql .= " GROUP BY tags.id, tags.name";
+		$sql .= " GROUP BY tags.id, tags.name, tags.users_id, tags.ip";
 		if (count($tags_list) > 0) {
 			$sql .= " HAVING tags.id NOT IN (".implode(",", $tags_list).")";
 		}
@@ -110,7 +110,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 
 			foreach ($tags as $tag) {
 				?><dt><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"
-					title="add '<?=htmlentities($tag->name)?>' to tag filter"><?=htmlentities($tag->name)?></a></dt><?
+					title="add '<?=htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=htmlentities($tag->name)?></a></dt><?
 				?><dd><?=htmlentities($tag->count)?></dd><?
 			}
 		}
@@ -140,7 +140,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 		foreach ($where_bind as $name => $value) {
 			$stmt->bindParam($name, $value);
 		}
-		$stmt2 = $db->prepare("SELECT tags.* FROM tags"
+		$stmt2 = $db->prepare("SELECT tags.id, tags.name, quotes_tags.users_id, quotes_tags.ip FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
 			." WHERE quotes_tags.quotes_id=:id");
 
@@ -278,7 +278,7 @@ if ($tags !== FALSE) {
 	?><ul class="tags"><?
 	foreach ($tags as $tag) {
 		?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"
-			title="add '<?=htmlentities($tag->name)?>' to tag filter"><?=htmlentities($tag->name)?></a></li><?
+			title="add '<?=htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=htmlentities($tag->name)?></a></li><?
 	}
 	?></ul><?
 }
@@ -325,6 +325,13 @@ function qdb_tags_qs_del($tagid) {
 	return implode("+", $tags);
 }
 
+function qdb_tag_creator($tag) {
+	global $user;
+
+	if ($user === FALSE || !$user->admin) { return ""; }
+	return " [".htmlentities(qdb_get_user($tag->users_id))."/".$tag->ip."]";
+}
+
 function qdb_tags_filter() {
 	global $db;
 
@@ -336,7 +343,7 @@ function qdb_tags_filter() {
 			$stmt->execute();
 			while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
 				?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_del($tag->id)?>"
-					title="remove '<?=htmlentities($tag->name)?>' from tag filter">!<?=htmlentities($tag->name)?></a></li><?
+					title="remove '<?=htmlentities($tag->name)?>' from tag filter<?=qdb_tag_creator($tag)?>">!<?=htmlentities($tag->name)?></a></li><?
 			}
 			$stmt->closeCursor();
 		} catch (PDOException $e) {
