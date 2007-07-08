@@ -55,7 +55,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 			if ($tagid == NULL) {
 				$stmt_ins->bindParam(":name", $tag);
 				if ($user === NULL) {
-					$stmt_ins->bindParam(":userid", NULL);
+					$stmt_ins->bindParam(":userid", "NULL");
 				} else {
 					$stmt_ins->bindParam(":userid", $user->id);
 				}
@@ -78,7 +78,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 					$stmt_add->bindParam(":quoteid", $quoteid);
 					$stmt_add->bindParam(":tagid", $tagid);
 					if ($user === NULL) {
-						$stmt_add->bindParam(":userid", NULL);
+						$stmt_add->bindParam(":userid", "NULL");
 					} else {
 						$stmt_add->bindParam(":userid", $user->id);
 					}
@@ -129,7 +129,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				$stmt->bindParam(":quoteid", $_GET["id"]);
 				$stmt->bindParam(":vote", $_GET["rate"]);
 				if ($user === FALSE) {
-					$stmt->bindParam(":userid", NULL);
+					$stmt->bindParam(":userid", "NULL");
 				} else {
 					$stmt->bindParam(":userid", $user->id);
 				}
@@ -153,7 +153,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					$stmt2->bindParam(":quoteid", $_GET["id"]);
 					$stmt2->bindParam(":vote", $_GET["rate"]);
 					if ($user === FALSE) {
-						$stmt2->bindParam(":userid", NULL);
+						$stmt2->bindParam(":userid", "NULL");
 					} else {
 						$stmt2->bindParam(":userid", $user->id);
 					}

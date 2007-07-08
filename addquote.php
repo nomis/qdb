@@ -45,7 +45,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 			$stmt = $db->prepare("INSERT INTO quotes (quote, hide, users_id, ip) VALUES(:text, :hide, :userid, :ip)");
 			$stmt->bindParam(":text", $_POST["quote"]);
 			if ($user === FALSE) {
-				$stmt->bindParam(":userid", NULL);
+				$stmt->bindParam(":userid", "NULL");
 				$stmt->bindParam(":hide", $config['autohide_anon']);
 			} else {
 				$stmt->bindParam(":userid", $user->id);
@@ -81,7 +81,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					if ($tagid == NULL) {
 						$stmt_ins->bindParam(":name", $tag);
 						if ($user === NULL) {
-							$stmt_ins->bindParam(":userid", NULL);
+							$stmt_ins->bindParam(":userid", "NULL");
 						} else {
 							$stmt_ins->bindParam(":userid", $user->id);
 						}
@@ -104,7 +104,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 						$stmt_add->bindParam(":quoteid", $id);
 						$stmt_add->bindParam(":tagid", $tagid);
 						if ($user === NULL) {
-							$stmt_add->bindParam(":userid", NULL);
+							$stmt_add->bindParam(":userid", "NULL");
 						} else {
 							$stmt_add->bindParam(":userid", $user->id);
 						}
