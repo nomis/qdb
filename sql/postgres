@@ -5,6 +5,7 @@ CREATE TABLE users (
 	name TEXT UNIQUE NOT NULL,
 	pass TEXT NOT NULL, -- lowercase sha1
 	admin BOOL NOT NULL DEFAULT FALSE,
+	nodelete BOOL NOT NULL DEFAULT FALSE,
 
 	PRIMARY KEY (id),
 	CONSTRAINT pass_hash CHECK (pass ~ '[0-9a-f]{40}')

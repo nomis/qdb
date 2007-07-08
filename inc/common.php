@@ -35,6 +35,7 @@ $config = array(
 	'tags_useronly'  => "Only allow users to create new tags",
 	'tags_regexp'    => "Regular expression of valid tags",
 	'tags_cloudsize' => "Number of tags to show in tag cloud",
+	'users_regexp'   => "Regular expression of valid usernames",
 	'secret'         => "Secret string used to validate urls"
 );
 foreach ($config as $option => $msg) {

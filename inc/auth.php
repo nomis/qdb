@@ -51,9 +51,9 @@ if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 }
 
 function qdb_auth() {
-	global $user, $name;
+	global $user, $config;
 	if ($user === FALSE) {
-		header('WWW-Authenticate: Basic realm="'.$name.'"');
+		header('WWW-Authenticate: Basic realm="'.$config["name"].'"');
 		header('HTTP/1.0 401 Unauthorized');
 		qdb_header("Login");
 		echo "<p>Login failed.</p>";

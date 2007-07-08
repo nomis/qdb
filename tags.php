@@ -24,11 +24,6 @@ qdb_header("Tags");
 if ($user === FALSE || !$user->admin) {
 	?><p>You are not an admin!</p><?
 } else {
-	?><table width="100%"><tr><th align="left">Tag</th>
-	<th align="left">Created</th>
-	<th align="left">By</th>
-	<th align="left">Quotes</th>
-	<th align="right">Actions</th></tr><?
 	try {
 		if (isset($_POST["id"]) && qdb_digit($_POST["id"]) && isset($_POST["name"]) && isset($_POST["action"])) {
 			if ($_POST["action"] == "Rename") {
@@ -46,12 +41,20 @@ if ($user === FALSE || !$user->admin) {
 						$stmt = $db->prepare("DELETE FROM tags WHERE id=:tagid");
 						$stmt->bindParam(":tagid", $_POST["id"]);
 						$stmt->execute();
+						if ($stmt->rowCount() > 0) {
+							qdb_ok("Renamed tag.");
+						}
 						$stmt->closeCursor();
-					} else if (preg_match($config['tags_regexp'], $_POST["name"])) {
+					} else if (!preg_match($config['tags_regexp'], $_POST["name"])) {
+						qdb_err("Invalid tag name.");
+					} else {
 						$stmt = $db->prepare("UPDATE tags SET name=:name WHERE id=:tagid");
 						$stmt->bindParam(":tagid", $_POST["id"]);
 						$stmt->bindParam(":name", $_POST["name"]);
 						$stmt->execute();
+						if ($stmt->rowCount() > 0) {
+							qdb_ok("Renamed tag.");
+						}
 						$stmt->closeCursor();
 					}
 				}
@@ -59,17 +62,28 @@ if ($user === FALSE || !$user->admin) {
 				$stmt = $db->prepare("DELETE FROM tags WHERE id=:tagid");
 				$stmt->bindParam(":tagid", $_POST["id"]);
 				$stmt->execute();
+				if ($stmt->rowCount() > 0) {
+					qdb_ok("Deleted tag.");
+				}
 				$stmt->closeCursor();
 			}
 		}
+
+		qdb_messages();
+		?><table class="tags" width="100%"><tr><th align="left">Tag</th>
+		<th align="left">Created</th>
+		<th align="left">By</th>
+		<th align="left">Quotes</th>
+		<th align="right">Actions</th></tr><?
 
 		$stmt = $db->prepare("SELECT *,"
 			." (SELECT COUNT(quotes_tags.quotes_id) FROM quotes_tags WHERE quotes_tags.tags_id=tags.id) AS count,"
 			." (SELECT users.name FROM users WHERE tags.users_id=users.id) AS users_name"
 			." FROM tags ORDER BY name ASC");
 		$stmt->execute();
+		$i = 0;
 		while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
-			?><tr><td><?=htmlentities($tag->name)?></td>
+			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><td><?=htmlentities($tag->name)?></td>
 			<td><?=date("Y-m-d H:i:s", strtotime($tag->ts))?></td>
 			<td class="small"><?=($tag->users_name != NULL ? htmlentities($tag->users_name)."/" : "").$tag->ip?></td>
 			<td align="center"><?=$tag->count?></td>
