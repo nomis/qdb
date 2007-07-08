@@ -62,8 +62,7 @@ if (isset($_GET["q1"]) && $_GET["q1"] != "") {
 		if ($stmt->rowCount() <= 0) {
 			$err = $stmt->errorInfo();
 			$stmt->closeCursor();
-			qdb_err(htmlentities($err[2]));
-			qdb_messages();
+			qdb_err(htmlentities('Tsearch2: '.$err[2]));
 			$ok = FALSE;
 		}
 		$stmt->closeCursor();
@@ -73,6 +72,27 @@ if (isset($_GET["q1"]) && $_GET["q1"] != "") {
 		qdb_die($e);
 	}
 }
+
+if ($ok && isset($_GET["q2"]) && $_GET["q2"] != "") {
+	try {
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
+		$stmt = $db->prepare("SELECT '' SIMILAR TO '".pg_escape_string($_GET["q2"])."'");
+		$stmt->execute();
+		if ($stmt->rowCount() <= 0) {
+			$err = $stmt->errorInfo();
+			$stmt->closeCursor();
+			qdb_err(htmlentities(preg_replace('/^.*?invalid regular expression: /', 'Regexp: ', $err[2])));
+			$ok = FALSE;
+		}
+		$stmt->closeCursor();
+
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch (PDOException $e) {
+		qdb_die($e);
+	}
+}
+qdb_messages();
 
 if ($ok) {
 	$sql = "quotes.hide=FALSE";

@@ -54,8 +54,8 @@ function qdb_die($e) {
 	$debug = ob_get_clean();
 
 	foreach ($config['email_admin'] as $email) {
-		mail($email, "[".$_SERVER["SERVER_NAME"]."] Exception at ".$e->getFile().":".$e->getLine()
-			." for ".$_SERVER["REQUEST_URI"]." (".$_SERVER["REMOTE_ADDR"].")",
+		mail($email, "[".$_SERVER["SERVER_NAME"]."] Exception: "
+				.$_SERVER["REQUEST_URI"]." (".$_SERVER["REMOTE_ADDR"].")",
 			"URI: ".$_SERVER["REQUEST_URI"]."\r\n"
 			."IP: ".$_SERVER["REMOTE_ADDR"]."\r\n"
 			.($user === FALSE ? "" : "User: ".$user->name."\r\n")
