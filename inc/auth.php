@@ -41,6 +41,7 @@ if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 			$stmt->execute();
 			$flagged = $stmt->fetch(PDO::FETCH_OBJ);
 			$stmt->closeCursor();
+			unset($stmt);
 		}
 	} catch (PDOException $e) {
 		qdb_die($e);

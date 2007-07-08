@@ -56,19 +56,30 @@ try {
 	$user = NULL;
 	$pass = NULL;
 	$db->exec("SELECT set_curcfg('default')");
+
 	$db->beginTransaction();
+	$stmt = $db->prepare("SELECT COUNT(id) AS count FROM quotes");
+	$stmt->execute();
+	$quotes_count = $stmt->fetch(PDO::FETCH_OBJ);
+	$stmt->closeCursor();
+
+	$stmt = $db->prepare("SELECT COUNT(id) AS count FROM tags");
+	$stmt->execute();
+	$tags_count = $stmt->fetch(PDO::FETCH_OBJ);
+	$stmt->closeCursor();
+	unset($stmt);
 } catch (PDOException $e) {
 	qdb_die($e);
 }
 
 function qdb_header($title = NULL) {
-	global $config, $user, $pending, $flagged, $header;
+	global $config, $user, $pending, $flagged, $quotes_count, $tags_count, $header;
 	include("header.php");
 	$header = TRUE;
 }
 
 function qdb_footer() {
-	global $config, $user, $pending, $flagged;
+	global $config, $user, $pending, $flagged, $quotes_count, $tags_count;
 	include("footer.php");
 }
 
