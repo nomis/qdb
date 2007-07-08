@@ -28,6 +28,7 @@ $config = array(
 	'perpage'        => "Quotes displayed per page",
 	'autohide_anon'  => "Hide all new anonymous quotes automatically",
 	'autohide_user'  => "Hide all new user quotes automatically",
+	'disabled'       => "Disable new quotes/tags/flagging",
 	'email_url'      => "Base url for quotes",
 	'email_notify'   => "Quote notification email addresses",
 	'email_full'     => "Full quote notification email addresses",

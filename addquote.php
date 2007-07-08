@@ -27,7 +27,9 @@ if (isset($_POST["quote"])) {
 	$_POST["quote"] = qdb_sanitise($_POST["quote"]);
 }
 
-if (isset($_POST["quote"]) && $_POST["quote"] != "") {
+if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
+	qdb_err("Quote adding disabled.");
+} else if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 	try {
 		$exists = FALSE;
 		$stmt = $db->prepare("SELECT * FROM quotes WHERE quote=:text");
@@ -145,6 +147,7 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 }
 
 qdb_messages();
+if (!$config["disabled"] || ($user !== FALSE && $user->admin)) {
 ?>
 <p>Please remove timestamps unless necessary.</p>
 <form method="post" action="addquote.php">
@@ -157,4 +160,7 @@ qdb_messages();
 <input class="cancel" type="reset">
 <input class="ok" type="submit" value="Add Quote">
 </form>
-<? qdb_footer(); ?>
+<?
+}
+qdb_footer();
+?>

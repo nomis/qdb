@@ -21,8 +21,8 @@ function qdb_get_show($id) {
 	global $db, $user;
 
 	try {
-		$stmt = $db->prepare("SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM quotes WHERE id=:id");
-		$stmt->bindParam(":id", $id);
+		$stmt = $db->prepare("SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM quotes WHERE id=:quoteid");
+		$stmt->bindParam(":quoteid", $id);
 
 		$stmt->execute();
 		$quote = $stmt->fetch(PDO::FETCH_OBJ);
@@ -36,8 +36,8 @@ function qdb_get_show($id) {
 			$stmt = $db->prepare("SELECT tags.*,"
 				." (SELECT users.name FROM users WHERE quotes_tags.users_id=users.id) AS users_name FROM tags"
 				." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
-				." WHERE quotes_tags.quotes_id=:id ORDER BY tags.name ASC");
-			$stmt->bindParam(":id", $id);
+				." WHERE quotes_tags.quotes_id=:quoteid ORDER BY tags.name ASC");
+			$stmt->bindParam(":quoteid", $id);
 
 			$stmt->execute();
 			$tags = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -142,11 +142,11 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 		$stmt2 = $db->prepare("SELECT tags.id, tags.name, quotes_tags.ip,"
 			." (SELECT users.name FROM users WHERE quotes_tags.users_id=users.id) AS users_name FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
-			." WHERE quotes_tags.quotes_id=:id ORDER BY tags.name ASC");
+			." WHERE quotes_tags.quotes_id=:quoteid ORDER BY tags.name ASC");
 
 		$stmt->execute();
 		while ($quote = $stmt->fetch(PDO::FETCH_OBJ)) {
-			$stmt2->bindParam(":id", $quote->id);
+			$stmt2->bindParam(":quoteid", $quote->id);
 			$stmt2->execute();
 			$tags = $stmt2->fetchAll(PDO::FETCH_OBJ);
 			$stmt2->closeCursor();

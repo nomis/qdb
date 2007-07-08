@@ -19,6 +19,14 @@
 */
 include("inc/common.php");
 
+if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
+	qdb_header("Modify");
+	qdb_err("Quote modification disabled.");
+	qdb_messages();
+	qdb_footer();
+	exit;
+}
+
 function qdb_modquote_tags($quoteid, $tags) {
 	global $db, $user, $config;
 
@@ -278,8 +286,8 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				} else {
 					$stmt = $db->prepare("SELECT tags.* FROM tags"
 						." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
-						." WHERE quotes_tags.quotes_id=:id ORDER BY tags.name ASC");
-					$stmt->bindParam(":id", $_GET["id"]);
+						." WHERE quotes_tags.quotes_id=:quoteid ORDER BY tags.name ASC");
+					$stmt->bindParam(":quoteid", $_GET["id"]);
 
 					$stmt->execute();
 					$tags = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -334,8 +342,8 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			qdb_err("Cannot make quotes empty, use the delete function.");
 		} else {
 			try {
-				$stmt = $db->prepare("SELECT * FROM quotes WHERE quote=:text AND id!=:id");
-				$stmt->bindParam(":id", $_POST["id"]);
+				$stmt = $db->prepare("SELECT * FROM quotes WHERE quote=:text AND id!=:quoteid");
+				$stmt->bindParam(":quoteid", $_POST["id"]);
 				$stmt->bindParam(":text", $_POST["quote"]);
 				$stmt->execute();
 				$quote = $stmt->fetch(PDO::FETCH_OBJ);
@@ -343,8 +351,8 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 
 				$stmt = $db->prepare("SELECT tags.* FROM tags"
 					." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
-					." WHERE quotes_tags.quotes_id=:id");
-				$stmt->bindParam(":id", $_POST["id"]);
+					." WHERE quotes_tags.quotes_id=:quoteid");
+				$stmt->bindParam(":quoteid", $_POST["id"]);
 
 				$stmt->execute();
 				$tags = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -353,8 +361,8 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				if ($quote !== FALSE) {
 					qdb_err("That quote already exists.");
 				} else {
-					$stmt = $db->prepare("UPDATE quotes SET quote=:text WHERE id=:id AND quote!=:text");
-					$stmt->bindParam(":id", $_POST["id"]);
+					$stmt = $db->prepare("UPDATE quotes SET quote=:text WHERE id=:quoteid AND quote!=:text");
+					$stmt->bindParam(":quoteid", $_POST["id"]);
 					$stmt->bindParam(":text", $_POST["quote"]);
 					$stmt->execute();
 					if ($stmt->rowCount() > 0) {

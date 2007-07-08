@@ -30,8 +30,8 @@ if (isset($_POST["pass0"]) && isset($_POST["pass1"]) && isset($_POST["pass2"])) 
 		qdb_err("Password is blank.");
 	} else {
 		try {
-			$stmt = $db->prepare("UPDATE users SET pass=:newpass WHERE id=:id AND pass=:oldpass");
-			$stmt->bindParam(":id", $user->id);
+			$stmt = $db->prepare("UPDATE users SET pass=:newpass WHERE id=:quoteid AND pass=:oldpass");
+			$stmt->bindParam(":quoteid", $user->id);
 			$stmt->bindParam(":oldpass", sha1($_POST["pass0"]));
 			$stmt->bindParam(":newpass", sha1($_POST["pass1"]));
 

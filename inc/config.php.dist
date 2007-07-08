@@ -3,6 +3,7 @@ $name = "Quote Database";
 $perpage = 50;
 $autohide_anon = "FALSE";
 $autohide_user = "FALSE";
+$disabled = FALSE;
 $email_url = "http://.../";
 $email_notify = array();
 $email_full = array();
