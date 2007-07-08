@@ -17,6 +17,7 @@
 	http://svn.lp0.eu/simon/qdb/
 	$Id$
 */
+header("Content-Type: text/html; charset=UTF-8");
 include("magic_quotes.php");
 include("messages.php");
 
