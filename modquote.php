@@ -31,7 +31,8 @@ function qdb_modquote_tags($quoteid, $tags) {
 	global $db, $user, $config;
 
 	$stmt_ins = $db->prepare("INSERT INTO tags (name, "
-		.($user === FALSE ? "" : "users_id, ")."ip) VALUES(:name, :userid, :ip)");
+		.($user === FALSE ? "" : "users_id, ")."ip) VALUES(:name, "
+		.($user === FALSE ? "" : ":userid, ").":ip)");
 	$stmt_get = $db->prepare("SELECT * FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
 	$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, "
 		.($user === FALSE ? "" : "users_id, ")."ip) VALUES(:quoteid, :tagid, "
