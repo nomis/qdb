@@ -50,7 +50,7 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 		$stmt->execute();
 		if ($stmt->rowCount() > 0) {
 			$id = $db->lastInsertId("quotes_id_seq");
-			qdb_ok('Added quote <a href="./?'.$id.'">'.$id.'</a>.');
+			qdb_ok('Added quote <a href="./?'.$id.'" title="quote #'.$id.'">#'.$id.'</a>.');
 			unset($_POST["quote"]);
 		} else {
 			qdb_err("Quote already exists.");

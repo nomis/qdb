@@ -53,6 +53,7 @@ try {
 	$db = new PDO($config['db'], $user, $pass);
 	$user = NULL;
 	$pass = NULL;
+	$db->exec("SELECT set_curcfg('default')");
 	$db->beginTransaction();
 } catch (PDOException $e) {
 	qdb_die("Error connecting to database: ".htmlentities($e->getMessage()).".");
