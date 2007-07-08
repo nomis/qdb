@@ -73,7 +73,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					if (substr($tag, 0, 1) == "!") {
 						continue;
 					} else if (!preg_match($config['tags_regexp'], $tag)) {
-						qdb_err("Tag '".htmlentities($tag)."' ignored.");
+						qdb_err("Tag '".qdb_htmlentities($tag)."' ignored.");
 						continue;
 					}
 
@@ -88,7 +88,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 						$stmt_ins->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
 						$stmt_ins->execute();
 						if ($stmt_ins->rowCount() <= 0) {
-							qdb_err("Error creating tag '".htmlentities($tag)."'.");
+							qdb_err("Error creating tag '".qdb_htmlentities($tag)."'.");
 							continue;
 						}
 						$tagid = $db->lastInsertId("tags_id_seq");
@@ -99,7 +99,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					$stmt_get->bindParam(":tagid", $tagid);
 					$stmt_get->execute();
 					if ($stmt_get->rowCount() > 0) {
-						qdb_ok("Tag '".htmlentities($tag)."' already set.");
+						qdb_ok("Tag '".qdb_htmlentities($tag)."' already set.");
 					} else {
 						$stmt_add->bindParam(":quoteid", $id);
 						$stmt_add->bindParam(":tagid", $tagid);
@@ -111,7 +111,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 						$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
 						$stmt_add->execute();
 						if ($stmt_add->rowCount() > 0) {
-							qdb_ok("Tag '".htmlentities($tag)."' added.");
+							qdb_ok("Tag '".qdb_htmlentities($tag)."' added.");
 							$oktags[] = $tag;
 						}
 						$stmt_add->closeCursor();
@@ -128,7 +128,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 			foreach ($config['email_full'] as $email) {
 				mail($email, "Quote #".$id,
 					$config['email_url'].'?'.$id."\r\n\r\n"
-					."From: ".($user === FALSE ? "" : htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
+					."From: ".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
 					.(count($oktags) == 0 ? "" : "Tags: ".implode(" ", $oktags)."\r\n")
 					."\r\n".str_replace("\n","\r\n",$_POST["quote"])
 					."\r\n\r\n-- \r\n".$config['name']."\r\n",
@@ -152,7 +152,7 @@ if (!$config["disabled"] || ($user !== FALSE && $user->admin)) {
 <p>Please remove timestamps unless necessary.</p>
 <form method="post" action="addquote.php">
 <textarea name="quote" rows="5" cols="80">
-<?=isset($_POST["quote"]) ? htmlentities($_POST["quote"]) : ""?>
+<?=isset($_POST["quote"]) ? qdb_htmlentities($_POST["quote"]) : ""?>
 </textarea><br>
 <? if (!$config['tags_useronly'] || $user !== FALSE) {?>
 <label>Tags</label>: <input name="tags" size="50">

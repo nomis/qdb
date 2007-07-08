@@ -46,7 +46,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 			$add = FALSE;
 			$tag = substr($tag, 1);
 		} else if (!preg_match($config['tags_regexp'], $tag)) {
-			qdb_err("Tag '".htmlentities($tag)."' ignored.");
+			qdb_err("Tag '".qdb_htmlentities($tag)."' ignored.");
 			continue;
 		}
 
@@ -62,7 +62,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 				$stmt_ins->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
 				$stmt_ins->execute();
 				if ($stmt_ins->rowCount() <= 0) {
-					qdb_err("Error creating tag '".htmlentities($tag)."'.");
+					qdb_err("Error creating tag '".qdb_htmlentities($tag)."'.");
 					continue;
 				}
 				$tagid = $db->lastInsertId("tags_id_seq");
@@ -73,7 +73,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 			$stmt_get->bindParam(":tagid", $tagid);
 			$stmt_get->execute();
 			if ($stmt_get->rowCount() > 0) {
-				qdb_ok("Tag '".htmlentities($tag)."' already set.");
+				qdb_ok("Tag '".qdb_htmlentities($tag)."' already set.");
 			} else {
 					$stmt_add->bindParam(":quoteid", $quoteid);
 					$stmt_add->bindParam(":tagid", $tagid);
@@ -85,14 +85,14 @@ function qdb_modquote_tags($quoteid, $tags) {
 					$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
 					$stmt_add->execute();
 					if ($stmt_add->rowCount() > 0) {
-						qdb_ok("Tag '".htmlentities($tag)."' added.");
+						qdb_ok("Tag '".qdb_htmlentities($tag)."' added.");
 					}
 					$stmt_add->closeCursor();
 			}
 			$stmt_get->closeCursor();
 		} else {
 			if ($tagid == NULL) {
-				qdb_err("Tag '".htmlentities($tag)."' does not exist.");
+				qdb_err("Tag '".qdb_htmlentities($tag)."' does not exist.");
 				continue;
 			}
 
@@ -100,9 +100,9 @@ function qdb_modquote_tags($quoteid, $tags) {
 			$stmt_del->bindParam(":tagid", $tagid);
 			$stmt_del->execute();
 			if ($stmt_del->rowCount() > 0) {
-				qdb_ok("Tag '".htmlentities($tag)."' removed.");
+				qdb_ok("Tag '".qdb_htmlentities($tag)."' removed.");
 			} else {
-				qdb_err("Tag '".htmlentities($tag)."' not set.");
+				qdb_err("Tag '".qdb_htmlentities($tag)."' not set.");
 			}
 			$stmt_del->closeCursor();
 
@@ -176,7 +176,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			}
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">Back to #<?=$_GET["id"]?></a>.</p><?
+		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_GET["flag"])) {
 		if ($_GET["flag"] > 0) { $_GET["flag"] = 1; } else { $_GET["flag"] = 0; }
@@ -204,7 +204,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			}
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">Back to #<?=$_GET["id"]?></a>.</p><?
+		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_GET["hide"])) {
 		if ($_GET["hide"] > 0) { $_GET["hide"] = 1; } else { $_GET["hide"] = 0; }
@@ -232,7 +232,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			}
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">Back to #<?=$_GET["id"]?></a>.</p><?
+		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_GET["del"])) {
 		qdb_header("Delete #".$_GET["id"]);
@@ -297,11 +297,11 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					<form method="post" action="modquote.php">
 					<input type="hidden" name="id" value="<?=$_GET["id"]?>">
 					<input type="hidden" name="edit" value="1">
-					<textarea name="quote" rows="5" cols="80"><?=htmlentities($quote->quote)?></textarea><br>
-					<label>Tags</label>: <input name="tags" size="50" value="<?
+					<textarea name="quote" rows="5" cols="80"><?=qdb_htmlentities($quote->quote)?></textarea><br>
+					<label for="tags">Tags</label>: <input name="tags" size="50" value="<?
 						foreach ($tags as $i => $tag) {
 							if ($i > 0) { echo " "; }
-							echo htmlentities($tag->name);
+							echo qdb_htmlentities($tag->name);
 						}
 					?>">
 					<input class="cancel" type="reset">
@@ -313,7 +313,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			}
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">Back to #<?=$_GET["id"]?></a>.</p><?
+		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	}
 } else if (isset($_POST["id"]) && qdb_digit($_POST["id"])) {
@@ -330,7 +330,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			}
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_POST["id"]?>" title="quote #<?=$_POST["id"]?>">Back to #<?=$_POST["id"]?></a>.</p><?
+		?><p><a href="./?<?=$_POST["id"]?>" title="quote #<?=$_POST["id"]?>">View #<?=$_POST["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_POST["edit"]) && isset($_POST["quote"]) && isset($_POST["tags"])) {
 		$_POST["quote"] = qdb_sanitise($_POST["quote"]);
@@ -388,7 +388,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			}
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_POST["id"]?>" title="quote #<?=$_POST["id"]?>">Back to #<?=$_POST["id"]?></a>.</p><?
+		?><p><a href="./?<?=$_POST["id"]?>" title="quote #<?=$_POST["id"]?>">View #<?=$_POST["id"]?></a>.</p><?
 		qdb_footer();
 	}
 }

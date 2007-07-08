@@ -104,13 +104,13 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 			foreach ($scale as $key => $count) {
 				if (!isset($max)) { $max = $key; }
 
-				$scale[$key] = round(0.5 + ($key / $max), 2);
+				$scale[$key] = round(0.75 + ($key / $max), 2);
 			}
 
 			foreach ($tags as $tag) {
 				?><dt><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"
-					title="add '<?=htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=htmlentities($tag->name)?></a></dt><?
-				?><dd><?=htmlentities($tag->count)?></dd><?
+					title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></dt><?
+				?><dd><?=qdb_htmlentities($tag->count)?></dd><?
 			}
 		}
 
@@ -239,17 +239,17 @@ function qdb_show($quote, $tags, $single = FALSE) {
 
 if ($user !== FALSE && $user->admin) {
 	if ($quote->users_name != NULL) {
-		?><span class="user"><?=htmlentities($quote->users_name)?></span>/<?
+		?><span class="user"><?=qdb_htmlentities($quote->users_name)?></span>/<?
 	}
 	?><span class="ip"><?=$quote->ip?></span><?
 }
 ?>
-</div><div class="text<?=$single ? "singu" : "multi"?>"><tt><?=nl2br(htmlentities($quote->quote));?></tt></div><?
+</div><div class="text<?=$single ? "singu" : "multi"?>"><tt><?=nl2br(qdb_htmlentities($quote->quote));?></tt></div><?
 if ($tags !== FALSE) {
 	?><ul class="tags"><?
 	foreach ($tags as $tag) {
 		?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"
-			title="add '<?=htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=htmlentities($tag->name)?></a></li><?
+			title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
 	}
 	?></ul><?
 }
@@ -300,7 +300,7 @@ function qdb_tag_creator($tag) {
 	global $user;
 
 	if ($user === FALSE || !$user->admin) { return ""; }
-	return " [".($tag->users_name != NULL ? htmlentities($tag->users_name)."/" : "").$tag->ip."]";
+	return " [".($tag->users_name != NULL ? qdb_htmlentities($tag->users_name)."/" : "").$tag->ip."]";
 }
 
 function qdb_tags_filter() {
@@ -314,7 +314,7 @@ function qdb_tags_filter() {
 			$stmt->execute();
 			while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
 				?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_del($tag->id)?>"
-					title="remove '<?=htmlentities($tag->name)?>' from tag filter<?=qdb_tag_creator($tag)?>">!<?=htmlentities($tag->name)?></a></li><?
+					title="remove '<?=qdb_htmlentities($tag->name)?>' from tag filter<?=qdb_tag_creator($tag)?>">!<?=qdb_htmlentities($tag->name)?></a></li><?
 			}
 			$stmt->closeCursor();
 		} catch (PDOException $e) {

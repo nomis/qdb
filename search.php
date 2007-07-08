@@ -39,11 +39,11 @@ if (isset($_GET["q1"])) {
 Regexp &ndash; <a href="http://www.postgresql.org/docs/8.2/static/functions-matching.html">SQL regular expression</a> (% for wildcard *, _ for wildcard ?).</p>
 <form method="get" action="search.php">
 <label for="q1">Tsearch2</label>:
-<input type="hidden" name="tags" value="<?=isset($_GET["tags"]) ? htmlentities($_GET["tags"]) : ""?>">
-<input type="text" name="q1" value="<?=isset($_GET["q1"]) ? htmlentities($_GET["q1"]) : ""?>" size="50">
+<input type="hidden" name="tags" value="<?=isset($_GET["tags"]) ? qdb_htmlentities($_GET["tags"]) : ""?>">
+<input type="text" name="q1" value="<?=isset($_GET["q1"]) ? qdb_htmlentities($_GET["q1"]) : ""?>" size="50">
 <input type="submit" value="Submit Query"><br>
 <label for="q2">Regexp</label>:
-<input type="text" name="q2" value="<?=isset($_GET["q2"]) ? htmlentities($_GET["q2"]) : ""?>" size="50">
+<input type="text" name="q2" value="<?=isset($_GET["q2"]) ? qdb_htmlentities($_GET["q2"]) : ""?>" size="50">
 <? if (isset($_GET["tags"]) && $_GET["tags"] != "") { ?>
 <input type="submit" name="submit" title="Submit Query without current tag filter" value="(without tags)">
 <? } ?>
@@ -62,7 +62,7 @@ if (isset($_GET["q1"]) && $_GET["q1"] != "") {
 		if ($stmt->rowCount() <= 0) {
 			$err = $stmt->errorInfo();
 			$stmt->closeCursor();
-			qdb_err(htmlentities('Tsearch2: '.$err[2]));
+			qdb_err(qdb_htmlentities('Tsearch2: '.$err[2]));
 			$ok = FALSE;
 		}
 		$stmt->closeCursor();
@@ -82,7 +82,7 @@ if ($ok && isset($_GET["q2"]) && $_GET["q2"] != "") {
 		if ($stmt->rowCount() <= 0) {
 			$err = $stmt->errorInfo();
 			$stmt->closeCursor();
-			qdb_err(htmlentities(preg_replace('/^.*?invalid regular expression: /', 'Regexp: ', $err[2])));
+			qdb_err(qdb_htmlentities(preg_replace('/^.*?invalid regular expression: /', 'Regexp: ', $err[2])));
 			$ok = FALSE;
 		}
 		$stmt->closeCursor();
@@ -94,7 +94,7 @@ if ($ok && isset($_GET["q2"]) && $_GET["q2"] != "") {
 }
 qdb_messages();
 
-if ($ok) {
+if ($ok && ((isset($_GET["q1"]) && $_GET["q1"] != "") || (isset($_GET["q2"]) && $_GET["q2"] != ""))) {
 	$sql = "quotes.hide=FALSE";
 	$bind = array();
 	if (isset($_GET["q1"]) && $_GET["q1"] != "") {

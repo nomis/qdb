@@ -22,6 +22,7 @@ include("magic_quotes.php");
 include("messages.php");
 
 function qdb_digit($str) { return preg_match('/^[0-9]+$/', $str); }
+function qdb_htmlentities($str) { return htmlentities($str, ENT_COMPAT, "UTF-8"); }
 
 $config = array(
 	'db'             => "PDO DSN",

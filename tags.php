@@ -83,14 +83,14 @@ if ($user === FALSE || !$user->admin) {
 		$stmt->execute();
 		$i = 0;
 		while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
-			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><td><?=htmlentities($tag->name)?></td>
+			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><td><?=qdb_htmlentities($tag->name)?></td>
 			<td><?=date("Y-m-d H:i:s", strtotime($tag->ts))?></td>
-			<td class="small"><?=($tag->users_name != NULL ? htmlentities($tag->users_name)."/" : "").$tag->ip?></td>
+			<td class="small"><?=($tag->users_name != NULL ? qdb_htmlentities($tag->users_name)."/" : "").$tag->ip?></td>
 			<td align="center"><?=$tag->count?></td>
 			<td align="right">
 				<form class="tags" method="post" action="tags.php">
 				<input type="hidden" name="id" value="<?=$tag->id?>">
-				<input type="text" name="name" value="<?=htmlentities($tag->name)?>">
+				<input type="text" name="name" value="<?=qdb_htmlentities($tag->name)?>">
 				<input type="submit" name="action" value="Rename">
 				<input type="submit" name="action" value="Delete">
 				</form>

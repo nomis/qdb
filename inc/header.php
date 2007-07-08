@@ -20,14 +20,14 @@
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en-GB"><head>
-<title><?=htmlentities($config['name'])?><?=isset($title) ? ": ".htmlentities($title) : ""?></title>
+<title><?=qdb_htmlentities($config['name'])?><?=isset($title) ? ": ".qdb_htmlentities($title) : ""?></title>
 <meta name="generator" content="QDB 2.0"><!-- QDB 2.0 ©2007 Simon Arlott -->
 <link rel="stylesheet" href="default.css" title="Stylesheet" type="text/css">
 </head>
 <body>
 <div id="top">
-<h1><?=htmlentities($config['name'])?></h1>
-<? if (isset($title)) { ?><h2><?=htmlentities($title)?></h2><? } ?>
+<h1><?=qdb_htmlentities($config['name'])?></h1>
+<? if (isset($title)) { ?><h2><?=qdb_htmlentities($title)?></h2><? } ?>
 <div class="clr"></div>
 </div>
 <? include("menu.php") ?>
