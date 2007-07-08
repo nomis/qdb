@@ -42,6 +42,8 @@ function qdb_die($e) {
 	unset($_SERVER2["PATH_INFO"]);
 	unset($_SERVER2["PATH_TRANSLATED"]);
 	unset($_SERVER2["PHP_SELF"]);
+	unset($_SERVER2["PHP_AUTH_USER"]);
+	unset($_SERVER2["PHP_AUTH_PW"]);
 	unset($_SERVER2["argv"]);
 	unset($_SERVER2["argc"]);
 	print_r($_SERVER2);
