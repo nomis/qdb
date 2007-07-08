@@ -17,7 +17,7 @@
 	Or, point your browser to http://www.gnu.org/copyleft/gpl.html
 
 	http://svn.lp0.eu/simon/qdb/
-	$Id: auth.php 68 2007-07-07 11:19:33Z byte $
+	$Id$
 */
 
 function qdb_secure($values) {

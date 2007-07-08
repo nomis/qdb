@@ -36,7 +36,7 @@
 <? if ($user !== FALSE) {
 	?><ul class="menu">
 		<li>User: <ul class="menu">
-			<li><a xhref="password.php">Change Password</a></li>
+			<li><a href="password.php">Change Password</a></li>
 		</ul></li><?
 		if ($user->admin) {
 			?><li>Admin: <ul class="menu">

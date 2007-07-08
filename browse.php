@@ -17,7 +17,7 @@
 	Or, point your browser to http://www.gnu.org/copyleft/gpl.html
 
 	http://svn.lp0.eu/simon/qdb/
-	$Id: latest.php 69 2007-07-07 12:30:23Z byte $
+	$Id$
 */
 include("inc/common.php");
 

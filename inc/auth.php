@@ -47,6 +47,8 @@ if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 	} catch (PDOException $e) {
 		qdb_die("Error checking username and password: ".htmlentities($e->getMessage()).".");
 	}
+
+	if ($user === FALSE) { qdb_auth(); }
 }
 
 function qdb_auth() {
@@ -54,6 +56,9 @@ function qdb_auth() {
 	if ($user === FALSE) {
 		header('WWW-Authenticate: Basic realm="'.$name.'"');
 		header('HTTP/1.0 401 Unauthorized');
+		qdb_header("Login");
+		echo "<p>Login failed.</p>";
+		qdb_footer();
 		exit;
 	}
 }
