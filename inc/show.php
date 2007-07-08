@@ -248,8 +248,12 @@ if ($user !== FALSE && $user->admin) {
 if ($tags !== FALSE) {
 	?><ul class="tags"><?
 	foreach ($tags as $tag) {
-		?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"
-			title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
+		if ($single) {
+			?><li><?=qdb_htmlentities($tag->name)?></li><?
+		} else {
+			?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"
+				title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
+		}
 	}
 	?></ul><?
 }
