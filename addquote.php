@@ -82,8 +82,6 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 						}
 						$tagid = $db->lastInsertId("tags_id_seq");
 						$stmt_ins->closeCursor();
-
-						qdb_put_tag($tag, $tagid);
 					}
 
 					$stmt_get->bindParam(":quoteid", $_POST["id"]);
@@ -92,7 +90,7 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 					if ($stmt_get->rowCount() > 0) {
 						qdb_ok("Tag '".htmlentities($tag)."' already set.");
 					} else {
-						$stmt_add->bindParam(":quoteid", $_POST["id"]);
+						$stmt_add->bindParam(":quoteid", $id);
 						$stmt_add->bindParam(":tagid", $tagid);
 						if ($user === NULL) {
 							$stmt_add->bindParam(":userid", NULL);
@@ -103,6 +101,7 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 						$stmt_add->execute();
 						if ($stmt_add->rowCount() > 0) {
 							qdb_ok("Tag '".htmlentities($tag)."' added.");
+							$oktags[] = $tag;
 						}
 						$stmt_add->closeCursor();
 					}
@@ -132,7 +131,7 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 		}
 		$stmt->closeCursor();
 	} catch (PDOException $e) {
-		qdb_err("Error adding quote: ".$e->getMessage());
+		qdb_die($e);
 	}
 }
 

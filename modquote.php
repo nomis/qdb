@@ -142,16 +142,25 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			?><p>You are not an admin!</p><?
 		} else {
 			try {
+				$stmt2 = $db->prepare("DELETE FROM tags WHERE "
+					." id IN (SELECT tags_id FROM quotes_tags WHERE quotes_id=:quoteid)"
+					." AND NOT EXISTS (SELECT tags_id FROM quotes_tags WHERE tags_id=tags.id"
+					." AND quotes_id!=:quoteid LIMIT 1)");
+				$stmt2->bindParam(":quoteid", $_GET["id"]);
+				$stmt2->execute();
+				$stmt2->closeCursor();
+
 				$stmt = $db->prepare("DELETE FROM quotes WHERE id=:quoteid");
 				$stmt->bindParam(":quoteid", $_GET["id"]);
 				$stmt->execute();
 				if ($stmt->rowCount() > 0) {
+					$db->commit();
+
 					qdb_ok("Quote #".$_GET["id"]." deleted.");
 				} else {
 					qdb_err("Quote #".$_GET["id"]." does not exist.");
 				}
 				$stmt->closeCursor();
-				$db->commit();
 			} catch (PDOException $e) {
 				qdb_die($e);
 			}
