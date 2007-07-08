@@ -30,9 +30,12 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 function qdb_modquote_tags($quoteid, $tags) {
 	global $db, $user, $config;
 
-	$stmt_ins = $db->prepare("INSERT INTO tags (name, users_id, ip) VALUES(:name, :userid, :ip)");
+	$stmt_ins = $db->prepare("INSERT INTO tags (name, "
+		.($user === FALSE ? "" : "users_id, ")."ip) VALUES(:name, :userid, :ip)");
 	$stmt_get = $db->prepare("SELECT * FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
-	$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, users_id, ip) VALUES(:quoteid, :tagid, :userid, :ip)");
+	$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, "
+		.($user === FALSE ? "" : "users_id, ")."ip) VALUES(:quoteid, :tagid, "
+		.($user === FALSE ? "" : ":userid, ").":ip)");
 	$stmt_del = $db->prepare("DELETE FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
 	$stmt_clr = $db->prepare("DELETE FROM tags WHERE id=:tagid AND NOT EXISTS"
 		." (SELECT tags_id FROM quotes_tags WHERE tags_id=:tagid LIMIT 1)");
@@ -54,9 +57,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 		if ($add) {
 			if ($tagid == NULL) {
 				$stmt_ins->bindParam(":name", $tag);
-				if ($user === NULL) {
-					$stmt_ins->bindParam(":userid", "NULL");
-				} else {
+				if ($user !== NULL) {
 					$stmt_ins->bindParam(":userid", $user->id);
 				}
 				$stmt_ins->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
@@ -77,9 +78,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 			} else {
 					$stmt_add->bindParam(":quoteid", $quoteid);
 					$stmt_add->bindParam(":tagid", $tagid);
-					if ($user === NULL) {
-						$stmt_add->bindParam(":userid", "NULL");
-					} else {
+					if ($user !== NULL) {
 						$stmt_add->bindParam(":userid", $user->id);
 					}
 					$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
@@ -125,12 +124,11 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			try {
 				$db->exec("DELETE FROM votes WHERE ts < CURRENT_DATE");
 
-				$stmt = $db->prepare("SELECT * FROM votes WHERE quotes_id=:quoteid AND vote=:vote AND (users_id=:userid OR ip=:ip)");
+				$stmt = $db->prepare("SELECT * FROM votes WHERE quotes_id=:quoteid AND vote=:vote AND ("
+					.($user === FALSE ? "" : "users_id=:userid OR ")."ip=:ip)");
 				$stmt->bindParam(":quoteid", $_GET["id"]);
 				$stmt->bindParam(":vote", $_GET["rate"]);
-				if ($user === FALSE) {
-					$stmt->bindParam(":userid", "NULL");
-				} else {
+				if ($user !== FALSE) {
 					$stmt->bindParam(":userid", $user->id);
 				}
 				$stmt->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
@@ -144,17 +142,17 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					$stmt->closeCursor();
 
 					$stmt = $db->prepare("UPDATE quotes SET rating=rating+:vote WHERE id=:quoteid");
-					$stmt2 = $db->prepare("INSERT INTO votes (quotes_id, vote, users_id, ip)"
-						." VALUES(:quoteid, :vote, :userid, :ip)");
+					$stmt2 = $db->prepare("INSERT INTO votes (quotes_id, vote, "
+						.($user === FALSE ? "" : "users_id, ")."ip)"
+						." VALUES(:quoteid, :vote, "
+						.($user === FALSE ? "" : ":userid, ").":ip)");
 
 					$stmt->bindParam(":quoteid", $_GET["id"]);
 					$stmt->bindParam(":vote", $_GET["rate"]);
 
 					$stmt2->bindParam(":quoteid", $_GET["id"]);
 					$stmt2->bindParam(":vote", $_GET["rate"]);
-					if ($user === FALSE) {
-						$stmt2->bindParam(":userid", "NULL");
-					} else {
+					if ($user !== FALSE) {
 						$stmt2->bindParam(":userid", $user->id);
 					}
 					$stmt2->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);

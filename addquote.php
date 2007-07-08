@@ -42,10 +42,11 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 		$stmt->closeCursor();
 
 		if (!$exists) {
-			$stmt = $db->prepare("INSERT INTO quotes (quote, hide, users_id, ip) VALUES(:text, :hide, :userid, :ip)");
+			$stmt = $db->prepare("INSERT INTO quotes (quote, hide, "
+				.($user === FALSE ? "" : "users_id, ")."ip) VALUES(:text, :hide, "
+				.($user === FALSE ? "" : ":userid, ").":ip)");
 			$stmt->bindParam(":text", $_POST["quote"]);
 			if ($user === FALSE) {
-				$stmt->bindParam(":userid", "NULL");
 				$stmt->bindParam(":hide", $config['autohide_anon']);
 			} else {
 				$stmt->bindParam(":userid", $user->id);
@@ -63,9 +64,12 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 
 			$oktags = array();
 			if (!$config['tags_useronly'] || $user !== FALSE) {
-				$stmt_ins = $db->prepare("INSERT INTO tags (name, users_id, ip) VALUES(:name, :userid, :ip)");
+				$stmt_ins = $db->prepare("INSERT INTO tags (name, "
+					.($users === NULL ? "" : "users_id, ")."ip) VALUES(:name, "
+					.($users === NULL ? "" : ":userid, ").":ip)");
 				$stmt_get = $db->prepare("SELECT * FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
-				$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, users_id, ip) VALUES(:quoteid, :tagid, :userid, :ip)");
+				$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, "
+					.($users === NULL ? "" : "users_id, ")."ip) VALUES(:quoteid, :tagid, :userid, :ip)");
 
 				foreach (explode(" ", $_POST["tags"]) as $tag) {
 					if ($tag == "") { continue; }
@@ -80,9 +84,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					$tagid = qdb_get_tag($tag);
 					if ($tagid == NULL) {
 						$stmt_ins->bindParam(":name", $tag);
-						if ($user === NULL) {
-							$stmt_ins->bindParam(":userid", "NULL");
-						} else {
+						if ($user !== NULL) {
 							$stmt_ins->bindParam(":userid", $user->id);
 						}
 						$stmt_ins->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
@@ -103,9 +105,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					} else {
 						$stmt_add->bindParam(":quoteid", $id);
 						$stmt_add->bindParam(":tagid", $tagid);
-						if ($user === NULL) {
-							$stmt_add->bindParam(":userid", "NULL");
-						} else {
+						if ($user !== NULL) {
 							$stmt_add->bindParam(":userid", $user->id);
 						}
 						$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
