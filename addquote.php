@@ -50,7 +50,7 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 			$id = $db->lastInsertId("quotes_id_seq");
 			qdb_ok('Added quote <a href="./?'.$id.'" title="quote #'.$id.'">#'.$id.'</a>.');
 
-			$oktags = "";
+			$oktags = array();
 			if (!$config['tags_useronly'] || $user !== FALSE) {
 				$stmt_ins = $db->prepare("INSERT INTO tags (name, users_id, ip) VALUES(:name, :userid, :ip)");
 				$stmt_get = $db->prepare("SELECT * FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
@@ -111,14 +111,14 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 			$db->commit();
 
 			foreach ($config['email_notify'] as $email) {
-				mail($email, $config['email_url'].'?'.$id, $oktags == "" ? "" : "(".$oktags.")");
+				mail($email, $config['email_url'].'?'.$id, count($oktags) == 0 ? "" : "(".implode(" ", $oktags).")");
 			}
 
 			foreach ($config['email_full'] as $email) {
 				mail($email, "Quote #".$id,
 					$config['email_url'].'?'.$id."\r\n\r\n"
 					."From: ".($user === FALSE ? "" : htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
-					.($oktags == "" ? "" : "Tags: ".$oktags."\r\n")
+					.(count($oktags) == 0 ? "" : "Tags: ".implode(" ", $oktags)."\r\n")
 					."\r\n".str_replace("\n","\r\n",$_POST["quote"])
 					."\r\n\r\n-- \r\n".$config['name']."\r\n",
 				"Content-Transfer-Encoding: 8bit\r\n"
