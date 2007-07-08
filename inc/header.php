@@ -22,7 +22,7 @@
 <html lang="en-GB"><head>
 <title><?=htmlentities($config['name'])?><?=isset($title) ? ": ".htmlentities($title) : ""?></title>
 <meta name="generator" content="QDB 2.0"><!-- QDB 2.0 ©2007 Simon Arlott -->
-<link rel="stylesheet" href="qdb.css" title="Stylesheet" type="text/css">
+<link rel="stylesheet" href="default.css" title="Stylesheet" type="text/css">
 </head>
 <body>
 <div id="top">
