@@ -173,6 +173,8 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					." (SELECT tags_id FROM quotes_tags WHERE tags_id=:tagid LIMIT 1)");
 
 				foreach (explode(" ", $_POST["tagset"]) as $tag) {
+					if ($tag == "") { continue; }
+
 					$add = TRUE;
 					if (substr($tag, 0, 1) == "!") {
 						if ($user === FALSE || !$user->admin) { continue; }

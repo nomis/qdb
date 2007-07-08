@@ -55,6 +55,8 @@ if (isset($_POST["quote"]) && $_POST["quote"] != "") {
 				$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, users_id, ip) VALUES(:quoteid, :tagid, :userid, :ip)");
 
 				foreach (explode(" ", $_POST["tags"]) as $tag) {
+					if ($tag == "") { continue; }
+
 					if (substr($tag, 0, 1) == "!") {
 						continue;
 					} else if (!preg_match($config['tags_regexp'], $tag)) {
