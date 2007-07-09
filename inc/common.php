@@ -17,7 +17,7 @@
 
 	$Id$
 */
-header("Content-Type: text/html; charset=UTF-8");
+if (!defined("QDB_ASYNC")) { header("Content-Type: text/html; charset=UTF-8"); }
 include("magic_quotes.php");
 include("messages.php");
 
@@ -78,13 +78,18 @@ try {
 
 function qdb_header($title = NULL) {
 	global $config, $user, $pending, $flagged, $quotes_count, $tags_count, $header;
-	include("header.php");
-	$header = TRUE;
+	if (!defined("QDB_ASYNC")) {
+		include("header.php");
+		$header = TRUE;
+	}
 }
 
 function qdb_footer() {
 	global $config, $user, $pending, $flagged, $quotes_count, $tags_count;
-	include("footer.php");
+
+	if (!defined("QDB_ASYNC")) {
+		include("footer.php");
+	}
 }
 
 function qdb_sanitise($str) {

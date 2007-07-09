@@ -89,6 +89,8 @@ function qdb_err($msg) {
 function qdb_messages() {
 	global $msgs;
 
+	if (defined("QDB_ASYNC")) { return; }
+
 	if (count($msgs) == 0) { return; }
 	echo '<p><ul class="msgs">';
 	foreach ($msgs as $msg) {
@@ -96,5 +98,31 @@ function qdb_messages() {
 	}
 	echo '</ul></p>';
 	$msgs = array();
+}
+
+function qdb_async_messages() {
+	global $msgs;
+
+	echo '<msgs><![CDATA[<ul class="msgs">';
+	foreach ($msgs as $msg) {
+		echo '<li class="'.$msg['type'].'">'.$msg['text'].'</li>';
+	}
+	echo '</ul>]]></msgs>';
+}
+
+function qdb_not_admin() {
+	if (!defined("QDB_ASYNC")) {
+		?><p>You are not an admin!</p><?
+	} else {
+		qdb_err("You are not an admin!");
+	}
+}
+
+function qdb_not_tags() {
+	if (!defined("QDB_ASYNC")) {
+		?><p>You are not allowed to set tags!</p><?
+	} else {
+		qdb_err("You are not allowed to set tags!");
+	}
 }
 ?>

@@ -22,7 +22,7 @@ include("inc/common.php");
 qdb_auth();
 qdb_header("Pending");
 if ($user === FALSE || !$user->admin) {
-	?><p>You are not an admin!</p><?
+	qdb_not_admin();
 } else {
 	qdb_getall_show("quotes.hide=TRUE", array(), "id ASC");
 }

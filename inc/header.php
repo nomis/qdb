@@ -23,6 +23,7 @@
 		?><title><?=qdb_htmlentities($config['name'])?><?=isset($title) ? ": ".qdb_htmlentities($title) : ""?></title><?
 		?><meta name="generator" content="QDB 2.0"><!-- QDB 2.0 ©2007 Simon Arlott --><?
 		?><link rel="stylesheet" href="default.css" title="Stylesheet" type="text/css"><?
+		?><script language="JavaScript" type="application/javascript" src="async.js"></script><?
 	?></head><?
 	?><body><?
 		?><div id="top"><?

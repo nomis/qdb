@@ -199,32 +199,37 @@ function qdb_del_tag($name) {
 
 function qdb_show($quote, $tags, $single = FALSE) {
 	global $user, $config;
+
+	if (defined("QDB_ASYNC")) {
+		echo '<quote><![CDATA[';
+	} else {
 	?><div class="quote"><?
+	}
 		?><p class="quote"><?
 			?><div class="header"><?
 				?><a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>: <?
-				?><a class="op rateup" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "1"))?>" title="rate #<?=$quote->id?> up">+</a><?
+				?><a class="op rateup" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "1"))?>" title="rate #<?=$quote->id?> up">+</a><?
 				?> <em class="rating"><?=$quote->rating?></em> <?
-				?><a class="op ratedown" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "-1"))?>" title="rate #<?=$quote->id?> down">-</a><?
+				?><a class="op ratedown" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "-1"))?>" title="rate #<?=$quote->id?> down">-</a><?
 
 	if ($user !== FALSE && $user->admin) {
-				?> <a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => "1"))?>" title="edit #<?=$quote->id?>">&#x00B6;</a><?
+				?> <a class="op edit" onclick="return modequote_edit(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => "1"))?>" title="edit #<?=$quote->id?>">&#x00B6;</a><?
 
 		if ($quote->flag) {
-				?> <a class="op unflag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "0"))?>" title="unflag #<?=$quote->id?>">&#x2691;</a><?
+				?> <a class="op unflag" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "0"))?>" title="unflag #<?=$quote->id?>">&#x2691;</a><?
 		} else {
-				?> <a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
+				?> <a class="op flag" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
 		}
 
 		if ($quote->hide) {
-				?> <a class="op show" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "0"))?>" title="show #<?=$quote->id?>">&#x2713;</a><?
+				?> <a class="op show" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "0"))?>" title="show #<?=$quote->id?>">&#x2713;</a><?
 		} else {
-				?> <a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "1"))?>" title="hide #<?=$quote->id?>">&#x2026;</a><?
+				?> <a class="op hide" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "1"))?>" title="hide #<?=$quote->id?>">&#x2026;</a><?
 		}
 
-				?> <a class="op del" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => "1"))?>" title="delete #<?=$quote->id?>">&#x2717;</a><?
+				?> <a class="op del" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => "1"))?>" title="delete #<?=$quote->id?>">&#x2717;</a><?
 	} else {
-				?> <a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
+				?> <a class="op flag" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
 	}
 
 	if ($user !== FALSE && $user->admin) {
@@ -238,37 +243,46 @@ function qdb_show($quote, $tags, $single = FALSE) {
 				?></span><?
 	}
 			?></div><?
-		?><div class="text<?=$single ? "singu" : "multi"?>"><tt><?
+			?><div class="text<?=$single ? "singu" : "multi"?>"><tt><?
 
 	echo
-		str_replace("\n", "<br>",
+		str_replace("\n", (defined("QDB_ASYNC") ? "<br/>" : "<br>"),
 			preg_replace('/(^|\n) \*/', '$1&nbsp;*',
 				qdb_htmlentities($quote->quote)
 			)
 		);
 
-		?></tt></div><?
+			?></tt></div><?
 	if ($tags !== FALSE) {
-		?><ul class="tags"><?
+			?><ul class="tags"><?
 		foreach ($tags as $tag) {
 			if ($single) {
-				?><li><a href="browse.php?tags=<?=$tag->id?>"<?
-				?> title="view quotes with tag '<?=qdb_htmlentities($tag->name)?>'<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
+					?><li><a href="browse.php?tags=<?=$tag->id?>"<?
+					?> title="view quotes with tag '<?=qdb_htmlentities($tag->name)?>'<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
 			} else {
-				?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"<?
-				?> title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
+					?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"<?
+					?> title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
 			}
 		}
-		?></ul><?
+			?></ul><?
 	}
 	if (!$config['tags_useronly'] || $user !== FALSE) {
-		?><form class="quote" method="post" action="modquote.php"><?
-			?><input type="hidden" name="id" value="<?=$quote->id?>"><?
-			?><input type="text" name="tagset"><?
-			?><input type="submit" value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags"><?
-		?></form><?
+			?><form class="quote" method="post" action="modquote.php"><?
+				?><input type="hidden" name="id" value="<?=$quote->id?>"><?
+				if (defined("QDB_ASYNC")) { echo '</input>'; }
+				?><input type="text" name="tagset"><?
+				if (defined("QDB_ASYNC")) { echo '</input>'; }
+				?><input type="submit" onclick="return modquote_tags(this)" value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags"><?
+				if (defined("QDB_ASYNC")) { echo '</input>'; }
+			?></form><?
 	}
-	?></p></div><?
+		?></p><?
+
+	if (defined("QDB_ASYNC")) {
+		echo ']]></quote>';
+	} else {
+	?></div><?
+	}
 }
 
 function qdb_tags_list() {

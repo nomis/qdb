@@ -22,7 +22,7 @@ include("inc/common.php");
 qdb_auth();
 qdb_header("Users");
 if ($user === FALSE || !$user->admin) {
-	?><p>You are not an admin!</p><?
+	qdb_not_admin();
 } else {
 	try {
 		if (isset($_POST["id"]) && qdb_digit($_POST["id"]) && isset($_POST["name"]) && isset($_POST["pass"]) && isset($_POST["action"])) {

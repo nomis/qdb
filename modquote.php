@@ -17,6 +17,12 @@
 
 	$Id$
 */
+if (isset($_GET["async"])) {
+	define("QDB_ASYNC", TRUE);
+	header("Content-Type: text/xml; charset=UTF-8");
+	echo '<qdb>';
+}
+
 include("inc/common.php");
 
 if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
@@ -187,7 +193,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		if (!qdb_secure(array("id","flag","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($_GET["flag"] == 0 && ($user === FALSE || !$user->admin)) {
-			?><p>You are not an admin!</p><?
+			qdb_not_admin();
 		} else {
 			try {
 				$stmt = $db->prepare("UPDATE quotes SET flag=:flag WHERE id=:quoteid");
@@ -219,7 +225,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		if (!qdb_secure(array("id","hide","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($user === FALSE || !$user->admin) {
-			?><p>You are not an admin!</p><?
+			qdb_not_admin();
 		} else {
 			try {
 				$stmt = $db->prepare("UPDATE quotes SET hide=:hide WHERE id=:quoteid");
@@ -249,7 +255,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		if (!qdb_secure(array("id","del","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($user === FALSE || !$user->admin) {
-			?><p>You are not an admin!</p><?
+			qdb_not_admin();
 		} else {
 			try {
 				$stmt2 = $db->prepare("DELETE FROM tags WHERE "
@@ -284,7 +290,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		if (!qdb_secure(array("id","edit","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($user === FALSE || !$user->admin) {
-			?><p>You are not an admin!</p><?
+			qdb_not_admin();
 		} else {
 			try {
 				$stmt = $db->prepare("SELECT * FROM quotes WHERE id=:quoteid");
@@ -334,7 +340,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 	if (isset($_POST["tagset"])) {
 		qdb_header("Tags #".$_POST["id"]);
 		if ($user === FALSE && $config['tags_useronly']) {
-			?><p>You are not allowed to set tags!</p><?
+			qdb_not_tags();
 		} else {
 			try {
 				qdb_modquote_tags($_POST["id"], $_POST["tagset"]);
@@ -355,7 +361,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 
 		qdb_header("Edit #".$_POST["id"]);
 		if ($user === FALSE || !$user->admin) {
-			?><p>You are not an admin!</p><?
+			qdb_not_admin();
 		} else if ($_POST["quote"] == "") {
 			qdb_err("Cannot make quotes empty, use the delete function.");
 		} else {
@@ -413,5 +419,10 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		qdb_messages();
 		qdb_footer();
 	}
+}
+
+if (defined("QDB_ASYNC")) {
+	qdb_async_messages();
+	echo '</qdb>';
 }
 ?>
