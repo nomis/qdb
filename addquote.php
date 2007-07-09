@@ -152,7 +152,7 @@ if (!$config["disabled"] || ($user !== FALSE && $user->admin)) {
 	?><p>Please remove timestamps unless necessary.</p><?
 
 	?><form method="post" action="addquote.php"><?
-		?><textarea name="quote" rows="5" cols="80"><?
+		?><textarea name="quote" rows="15" cols="80"><?
 			?><?=isset($_POST["quote"]) ? qdb_htmlentities($_POST["quote"]) : ""?><?
 		?></textarea><br><?
 

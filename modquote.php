@@ -310,7 +310,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					?><form method="post" action="modquote.php"><?
 						?><input type="hidden" name="id" value="<?=$_GET["id"]?>"><?
 						?><input type="hidden" name="edit" value="1"><?
-						?><textarea name="quote" rows="5" cols="80"><?=qdb_htmlentities($quote->quote)?></textarea><br><?
+						?><textarea name="quote" rows="15" cols="80"><?=qdb_htmlentities($quote->quote)?></textarea><br><?
 						?><label for="tags">Tags</label>: <input name="tags" size="50" value="<?
 
 						foreach ($tags as $i => $tag) {

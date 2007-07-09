@@ -238,7 +238,16 @@ function qdb_show($quote, $tags, $single = FALSE) {
 				?></span><?
 	}
 			?></div><?
-		?><div class="text<?=$single ? "singu" : "multi"?>"><tt><?=str_replace("\n", "<br>", qdb_htmlentities($quote->quote));?></tt></div><?
+		?><div class="text<?=$single ? "singu" : "multi"?>"><tt><?
+
+	echo
+		str_replace("\n", "<br>",
+			preg_replace('/(^|\n) \*/', '$1&nbsp;*',
+				qdb_htmlentities($quote->quote)
+			)
+		);
+
+		?></tt></div><?
 	if ($tags !== FALSE) {
 		?><ul class="tags"><?
 		foreach ($tags as $tag) {

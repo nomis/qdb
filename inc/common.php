@@ -99,7 +99,8 @@ function qdb_sanitise($str) {
 	$str = preg_replace('/\r/', "\n", $str);
 
 	// remove preceding and trailing whitespace on each line, preserving indented actions
-	$str = preg_replace('/\n[\t ]+( \*)?/', "\n\$1", $str);
+	$str = preg_replace('/\n[\t ]+ \*/', "\n *", $str);
+	$str = preg_replace('/\n[\t ]+[^\*]/', "\n", $str);
 	$str = preg_replace('/[\t ]+\n/', "\n", $str);
 
 	// remove preceding and trailing newlines
