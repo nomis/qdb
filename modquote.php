@@ -170,12 +170,15 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				}
 
 				$db->commit();
+				$db->beginTransaction();
 			} catch (PDOException $e) {
 				qdb_die($e);
 			}
+
+			qdb_messages();
+			qdb_get_show($_GET["id"]);
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_GET["flag"])) {
 		if ($_GET["flag"] > 0) { $_GET["flag"] = 1; } else { $_GET["flag"] = 0; }
@@ -197,13 +200,17 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					qdb_err("Quote ".$_GET["id"]." does not exist.");
 				}
 				$stmt->closeCursor();
+
 				$db->commit();
+				$db->beginTransaction();
 			} catch (PDOException $e) {
 				qdb_die($e);
 			}
+
+			qdb_messages();
+			qdb_get_show($_GET["id"]);
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_GET["hide"])) {
 		if ($_GET["hide"] > 0) { $_GET["hide"] = 1; } else { $_GET["hide"] = 0; }
@@ -225,13 +232,17 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					qdb_err("Quote ".$_GET["id"]." does not exist.");
 				}
 				$stmt->closeCursor();
+
 				$db->commit();
+				$db->beginTransaction();
 			} catch (PDOException $e) {
 				qdb_die($e);
 			}
+
+			qdb_messages();
+			qdb_get_show($_GET["id"]);
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_GET["del"])) {
 		qdb_header("Delete #".$_GET["id"]);
@@ -260,6 +271,8 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					qdb_err("Quote #".$_GET["id"]." does not exist.");
 				}
 				$stmt->closeCursor();
+
+				$db->commit();
 			} catch (PDOException $e) {
 				qdb_die($e);
 			}
@@ -312,7 +325,6 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			}
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_GET["id"]?>" title="quote #<?=$_GET["id"]?>">View #<?=$_GET["id"]?></a>.</p><?
 		qdb_footer();
 	}
 } else if (isset($_POST["id"]) && qdb_digit($_POST["id"])) {
@@ -323,13 +335,17 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		} else {
 			try {
 				qdb_modquote_tags($_POST["id"], $_POST["tagset"]);
+
 				$db->commit();
+				$db->beginTransaction();
 			} catch (PDOException $e) {
 				qdb_die($e);
 			}
+
+			qdb_messages();
+			qdb_get_show($_POST["id"]);
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_POST["id"]?>" title="quote #<?=$_POST["id"]?>">View #<?=$_POST["id"]?></a>.</p><?
 		qdb_footer();
 	} else if (isset($_POST["edit"]) && isset($_POST["quote"]) && isset($_POST["tags"])) {
 		$_POST["quote"] = qdb_sanitise($_POST["quote"]);
@@ -381,13 +397,17 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				$newtags = array_diff($newtags, $oldtags);
 
 				qdb_modquote_tags($_POST["id"], implode(" ", $newtags));
+
 				$db->commit();
+				$db->beginTransaction();
 			} catch (PDOException $e) {
 				qdb_die($e);
 			}
+
+			qdb_messages();
+			qdb_get_show($_POST["id"]);
 		}
 		qdb_messages();
-		?><p><a href="./?<?=$_POST["id"]?>" title="quote #<?=$_POST["id"]?>">View #<?=$_POST["id"]?></a>.</p><?
 		qdb_footer();
 	}
 }
