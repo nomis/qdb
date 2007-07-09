@@ -149,19 +149,20 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 
 qdb_messages();
 if (!$config["disabled"] || ($user !== FALSE && $user->admin)) {
-?>
-<p>Please remove timestamps unless necessary.</p>
-<form method="post" action="addquote.php">
-<textarea name="quote" rows="5" cols="80">
-<?=isset($_POST["quote"]) ? qdb_htmlentities($_POST["quote"]) : ""?>
-</textarea><br>
-<? if (!$config['tags_useronly'] || $user !== FALSE) {?>
-<label>Tags</label>: <input name="tags" size="50">
-<? } ?>
-<input class="cancel" type="reset">
-<input class="ok" type="submit" value="Add Quote">
-</form>
-<?
+	?><p>Please remove timestamps unless necessary.</p><?
+
+	?><form method="post" action="addquote.php"><?
+		?><textarea name="quote" rows="5" cols="80"><?
+			?><?=isset($_POST["quote"]) ? qdb_htmlentities($_POST["quote"]) : ""?><?
+		?></textarea><br><?
+
+	if (!$config['tags_useronly'] || $user !== FALSE) {
+		?><label>Tags</label>: <input name="tags" size="50"><?
+	}
+
+		?><input class="cancel" type="reset"><?
+		?><input class="ok" type="submit" value="Add Quote"><?
+	?></form><?
 }
 qdb_footer();
 ?>

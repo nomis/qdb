@@ -305,20 +305,23 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 					$tags = $stmt->fetchAll(PDO::FETCH_OBJ);
 					$stmt->closeCursor();
 
-					?><p>Editing quote #<?=$_GET["id"]?>:</p>
-					<form method="post" action="modquote.php">
-					<input type="hidden" name="id" value="<?=$_GET["id"]?>">
-					<input type="hidden" name="edit" value="1">
-					<textarea name="quote" rows="5" cols="80"><?=qdb_htmlentities($quote->quote)?></textarea><br>
-					<label for="tags">Tags</label>: <input name="tags" size="50" value="<?
+					?><p>Editing quote #<?=$_GET["id"]?>:</p><?
+
+					?><form method="post" action="modquote.php"><?
+						?><input type="hidden" name="id" value="<?=$_GET["id"]?>"><?
+						?><input type="hidden" name="edit" value="1"><?
+						?><textarea name="quote" rows="5" cols="80"><?=qdb_htmlentities($quote->quote)?></textarea><br><?
+						?><label for="tags">Tags</label>: <input name="tags" size="50" value="<?
+
 						foreach ($tags as $i => $tag) {
 							if ($i > 0) { echo " "; }
 							echo qdb_htmlentities($tag->name);
 						}
-					?>">
-					<input class="cancel" type="reset">
-					<input class="ok" type="submit" value="Modify Quote">
-					</form><?
+
+						?>"><?
+						?><input class="cancel" type="reset"><?
+						?><input class="ok" type="submit" value="Modify Quote"><?
+					?></form><?
 				}
 			} catch (PDOException $e) {
 				qdb_die($e);

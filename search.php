@@ -34,21 +34,22 @@ if (isset($_GET["q1"])) {
 	$_GET["q1"] = preg_replace('/\|+/', '|', $_GET["q1"]);
 	$_GET["q1"] = preg_replace('/!+/', '!', $_GET["q1"]);
 }
-?>
-<p>Tsearch2 &ndash; use &amp; for AND, | for OR, and ! for NOT, etc. &ndash; <strong>no spaces and no wildcards</strong>.<br>
-Regexp &ndash; <a href="http://www.postgresql.org/docs/8.2/static/functions-matching.html">SQL regular expression</a> (% for wildcard *, _ for wildcard ?).</p>
-<form method="get" action="search.php">
-<label for="q1">Tsearch2</label>:
-<input type="hidden" name="tags" value="<?=isset($_GET["tags"]) ? qdb_htmlentities($_GET["tags"]) : ""?>">
-<input type="text" name="q1" value="<?=isset($_GET["q1"]) ? qdb_htmlentities($_GET["q1"]) : ""?>" size="50">
-<input type="submit" value="Submit Query"><br>
-<label for="q2">Regexp</label>:
-<input type="text" name="q2" value="<?=isset($_GET["q2"]) ? qdb_htmlentities($_GET["q2"]) : ""?>" size="50">
-<? if (isset($_GET["tags"]) && $_GET["tags"] != "") { ?>
-<input type="submit" name="submit" title="Submit Query without current tag filter" value="(without tags)">
-<? } ?>
-</form><br>
-<?
+
+?><p>Tsearch2 &ndash; use &amp; for AND, | for OR, and ! for NOT, etc. &ndash; <strong>no spaces and no wildcards</strong>.<br><?
+?>Regexp &ndash; <a href="http://www.postgresql.org/docs/8.2/static/functions-matching.html">SQL regular expression</a> (% for wildcard *, _ for wildcard ?).</p><?
+?><form method="get" action="search.php"><?
+	?><label for="q1">Tsearch2</label>:<?
+	?><input type="hidden" name="tags" value="<?=isset($_GET["tags"]) ? qdb_htmlentities($_GET["tags"]) : ""?>"><?
+	?><input type="text" name="q1" value="<?=isset($_GET["q1"]) ? qdb_htmlentities($_GET["q1"]) : ""?>" size="50"><?
+	?><input type="submit" value="Submit Query"><br><?
+	?><label for="q2">Regexp</label>:<?
+	?><input type="text" name="q2" value="<?=isset($_GET["q2"]) ? qdb_htmlentities($_GET["q2"]) : ""?>" size="50"><?
+
+	if (isset($_GET["tags"]) && $_GET["tags"] != "") {
+		?><input type="submit" name="submit" title="Submit Query without current tag filter" value="(without tags)"><?
+	}
+?></form><br><?
+
 $ok = TRUE;
 
 if (isset($_GET["q1"]) && $_GET["q1"] != "") {

@@ -70,11 +70,15 @@ if ($user === FALSE || !$user->admin) {
 		}
 
 		qdb_messages();
-		?><table class="tags" width="100%"><tr><th align="left">Tag</th>
-		<th align="left">Created</th>
-		<th align="left">By</th>
-		<th align="left">Quotes</th>
-		<th align="right">Actions</th></tr><?
+
+		?><table class="tags" width="100%"><?
+			?><tr><?
+				?><th align="left">Tag</th><?
+				?><th align="left">Created</th><?
+				?><th align="left">By</th><?
+				?><th align="left">Quotes</th><?
+				?><th align="right">Actions</th><?
+			?></tr><?
 
 		$stmt = $db->prepare("SELECT *,"
 			." (SELECT COUNT(quotes_tags.quotes_id) FROM quotes_tags WHERE quotes_tags.tags_id=tags.id) AS count,"
@@ -83,25 +87,26 @@ if ($user === FALSE || !$user->admin) {
 		$stmt->execute();
 		$i = 0;
 		while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
-			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>>
-			<td><a href="browse.php?tags=<?=$tag->id?>" title="view quotes with tag '<?=qdb_htmlentities($tag->name)?>'"><?=qdb_htmlentities($tag->name)?></a></td>
-			<td class="small"><?=str_replace(" ", "&nbsp;", date("Y-m-d H:i:s", strtotime($tag->ts)))?></td>
-			<td class="verysmall"><?=($tag->users_name != NULL ? qdb_htmlentities($tag->users_name)."/" : "").$tag->ip?></td>
-			<td align="center"><?=$tag->count?></td>
-			<td align="right">
-				<form class="tags" method="post" action="tags.php">
-				<input type="hidden" name="id" value="<?=$tag->id?>">
-				<input type="text" name="name" value="<?=qdb_htmlentities($tag->name)?>">
-				<input type="submit" name="action" value="Rename">
-				<input type="submit" name="action" value="Delete">
-				</form>
-			</td></tr><?
+			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><?
+				?><td><a href="browse.php?tags=<?=$tag->id?>" title="view quotes with tag '<?=qdb_htmlentities($tag->name)?>'"><?=qdb_htmlentities($tag->name)?></a></td><?
+				?><td class="small"><?=str_replace(" ", "&nbsp;", date("Y-m-d H:i:s", strtotime($tag->ts)))?></td><?
+				?><td class="verysmall"><?=($tag->users_name != NULL ? qdb_htmlentities($tag->users_name)."/" : "").$tag->ip?></td><?
+				?><td align="center"><?=$tag->count?></td><?
+				?><td align="right"><?
+					?><form class="tags" method="post" action="tags.php"><?
+						?><input type="hidden" name="id" value="<?=$tag->id?>"><?
+						?><input type="text" name="name" value="<?=qdb_htmlentities($tag->name)?>"><?
+						?><input type="submit" name="action" value="Rename"><?
+						?><input type="submit" name="action" value="Delete"><?
+					?></form><?
+				?></td><?
+			?></tr><?
 		}
 		$stmt->closeCursor();
 
 		$db->commit();
 	} catch (PDOException $e) {
-		echo "</table>";
+		?></table><?
 		qdb_die($e);
 	}
 	?></table><?

@@ -17,11 +17,13 @@
 	http://svn.lp0.eu/simon/qdb/
 	$Id$
 */
-?>
-</div>
-<? include("menu.php")?>
-<div id="bottom"><p><a href="qdb-2_0.tar.bz2" title="QDB 2.0 source">QDB 2.0</a><!-- http://svn.lp0.eu/simon/qdb/ -->
-| <?=$quotes_count->count?> quote<?=$quotes_count->count == 1 ? "" : "s"?>,
-<?=$tags_count->count?> tag<?=$tags_count->count == 1 ? "" : "s"?>
-</p></div>
-</body></html>
+?></div><?
+include("menu.php")
+?><div id="bottom"><?
+	?><p><?
+		?><a href="qdb-2_0.tar.bz2" title="QDB 2.0 source">QDB 2.0</a><!-- http://svn.lp0.eu/simon/qdb/ --><?
+		?> | <?=$quotes_count->count?> quote<?=$quotes_count->count == 1 ? "" : "s"?>,<?
+		?> <?=$tags_count->count?> tag<?=$tags_count->count == 1 ? "" : "s"?><?
+	?></p><?
+?></div><?
+?></body></html>

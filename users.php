@@ -117,12 +117,16 @@ if ($user === FALSE || !$user->admin) {
 		}
 
 		qdb_messages();
-		?><table class="users" width="100%"><tr><th align="left">Name</th>
-		<th>Quotes</th>
-		<th>Tags</th>
-		<th>Admin</th>
-		<th align="right">Actions</th></tr><?
 
+		?><table class="users" width="100%"><?
+			?><tr><?
+				?><th align="left">Name</th><?
+				?><th>Quotes</th><?
+				?><th>Tags</th><?
+				?><th>Admin</th><?
+				?><th align="right">Actions</th><?
+			?></tr><?
+	
 		$stmt = $db->prepare("SELECT *,"
 			." (SELECT COUNT(id) FROM quotes WHERE quotes.users_id=users.id) AS count_quotes,"
 			." (SELECT COUNT(id) FROM tags WHERE tags.users_id=users.id) AS count_tags"
@@ -130,40 +134,43 @@ if ($user === FALSE || !$user->admin) {
 		$stmt->execute();
 		$i = 0;
 		while ($auser = $stmt->fetch(PDO::FETCH_OBJ)) {
-			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><td><?=qdb_htmlentities($auser->name, ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")?></td>
-			<td align="center"><?=$auser->count_quotes?></td>
-			<td align="center"><?=$auser->count_tags?></td>
-			<td align="center"><?=$auser->admin ? "Yes" : "No"?></td>
-			<td align="right">
-				<form class="users" method="post" action="users.php">
-				<input type="hidden" name="id" value="<?=$auser->id?>">
-				<input type="password" name="pass" value="">
-				<input type="submit" name="action" value="Change Password">
-				<input type="submit" name="action" value="Make User">
-				<br>
-				<input type="text" name="name" value="<?=qdb_htmlentities($auser->name, ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")?>">
-				<input type="submit" name="action" value="Rename">
-				<input type="submit" name="action" value="Delete">
-				<input type="submit" name="action" value="Make Admin">
-				<br>
-				</form>
-			</td></tr><?
+			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><?
+				?><td><?=qdb_htmlentities($auser->name, ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")?></td><?
+				?><td align="center"><?=$auser->count_quotes?></td><?
+				?><td align="center"><?=$auser->count_tags?></td><?
+				?><td align="center"><?=$auser->admin ? "Yes" : "No"?></td><?
+				?><td align="right"><?
+					?><form class="users" method="post" action="users.php"><?
+						?><input type="hidden" name="id" value="<?=$auser->id?>"><?
+						?><input type="password" name="pass" value=""><?
+						?><input type="submit" name="action" value="Change Password"><?
+						?><input type="submit" name="action" value="Make User"><?
+						?><br><?
+						?><input type="text" name="name" value="<?=qdb_htmlentities($auser->name, ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")?>"><?
+						?><input type="submit" name="action" value="Rename"><?
+						?><input type="submit" name="action" value="Delete"><?
+						?><input type="submit" name="action" value="Make Admin"><?
+						?><br><?
+					?></form><?
+				?></td><?
+			?></tr><?
 		}
 		$stmt->closeCursor();
 
 		$db->commit();
 	} catch (PDOException $e) {
-		echo "</table>";
+		?></table><?;
 		qdb_die($e);
 	}
-	?></table><hr>
-	<form method="post" action="users.php">
-	<input type="hidden" name="id" value="0">
-	<label for="name">Name</label>: <input type="text" name="name"><br>
-	<label for="pass">Pass</label>: <input type="password" name="pass"><br>
-	<input type="checkbox" name="admin"><label for="admin">Admin</label>
-	<input type="submit" name="action" value="Create User">
-	</form><?
+	?></table><?
+	?><hr><?
+	?><form method="post" action="users.php"><?
+		?><input type="hidden" name="id" value="0"><?
+		?><label for="name">Name</label>: <input type="text" name="name"><br><?
+		?><label for="pass">Pass</label>: <input type="password" name="pass"><br><?
+		?><input type="checkbox" name="admin"><label for="admin">Admin</label><?
+		?><input type="submit" name="action" value="Create User"><?
+	?></form><?
 }
 qdb_footer();
 ?>

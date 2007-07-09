@@ -108,8 +108,8 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 			}
 
 			foreach ($tags as $tag) {
-				?><dt><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"
-					title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></dt><?
+				?><dt><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>" style="font-size: <?=$scale[$tag->count]?>em;"<?
+					?> title="add '<?=qdb_htmlentities($tag->name)?>' to tag filter<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></dt><?
 				?><dd><?=qdb_htmlentities($tag->count)?></dd><?
 			}
 		}
@@ -199,38 +199,46 @@ function qdb_del_tag($name) {
 
 function qdb_show($quote, $tags, $single = FALSE) {
 	global $user, $config;
-	?>
-<div class="quote"><p class="quote">
-<div class="header"><a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>:
-<a class="op rateup" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "1"))?>" title="rate #<?=$quote->id?> up">+</a>
-<em class="rating"><?=$quote->rating?></em>
-<a class="op ratedown" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "-1"))?>" title="rate #<?=$quote->id?> down">-</a>
-<?
+	?><div class="quote"><?
+		?><p class="quote"><?
+			?><div class="header"><?
+				?><a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>: <?
+				?><a class="op rateup" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "1"))?>" title="rate #<?=$quote->id?> up">+</a><?
+				?> <em class="rating"><?=$quote->rating?></em> <?
+				?><a class="op ratedown" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "-1"))?>" title="rate #<?=$quote->id?> down">-</a><?
+
 	if ($user !== FALSE && $user->admin) {
-		?><a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => "1"))?>" title="edit #<?=$quote->id?>">&#x00B6;</a><?
+				?> <a class="op edit" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => "1"))?>" title="edit #<?=$quote->id?>">&#x00B6;</a><?
+
 		if ($quote->flag) {
-			?><a class="op unflag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "0"))?>" title="unflag #<?=$quote->id?>">&#x2691;</a><?
+				?> <a class="op unflag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "0"))?>" title="unflag #<?=$quote->id?>">&#x2691;</a><?
 		} else {
-			?><a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
+				?> <a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
 		}
+
 		if ($quote->hide) {
-			?><a class="op show" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "0"))?>" title="show #<?=$quote->id?>">&#x2713;</a><?
+				?> <a class="op show" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "0"))?>" title="show #<?=$quote->id?>">&#x2713;</a><?
 		} else {
-			?><a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "1"))?>" title="hide #<?=$quote->id?>">&#x2026;</a><?
+				?> <a class="op hide" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "1"))?>" title="hide #<?=$quote->id?>">&#x2026;</a><?
 		}
-		?><a class="op del" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => "1"))?>" title="delete #<?=$quote->id?>">&#x2717;</a><?
+
+				?> <a class="op del" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => "1"))?>" title="delete #<?=$quote->id?>">&#x2717;</a><?
 	} else {
-		?><a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
+				?> <a class="op flag" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
 	}
 
 	if ($user !== FALSE && $user->admin) {
-		?><span class="userandip"><?
+				?> <span class="userandip"><?
+
 		if ($quote->users_name != NULL) {
-			?><span class="user"><?=qdb_htmlentities($quote->users_name)?></span>/<?
+					?><span class="user"><?=qdb_htmlentities($quote->users_name)?></span>/<?
 		}
-		?><span class="ip"><?=$quote->ip?></span></span><?
+
+					?><span class="ip"><?=$quote->ip?></span><?
+				?></span><?
 	}
-	?></div><div class="text<?=$single ? "singu" : "multi"?>"><tt><?=nl2br(qdb_htmlentities($quote->quote));?></tt></div><?
+			?></div><?
+		?><div class="text<?=$single ? "singu" : "multi"?>"><tt><?=str_replace("\n", "<br>", qdb_htmlentities($quote->quote));?></tt></div><?
 	if ($tags !== FALSE) {
 		?><ul class="tags"><?
 		foreach ($tags as $tag) {
@@ -246,8 +254,9 @@ function qdb_show($quote, $tags, $single = FALSE) {
 	}
 	if (!$config['tags_useronly'] || $user !== FALSE) {
 		?><form class="quote" method="post" action="modquote.php"><?
-		?><input type="hidden" name="id" value="<?=$quote->id?>"><?
-		?><input type="text" name="tagset"><input type="submit" value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags"><?
+			?><input type="hidden" name="id" value="<?=$quote->id?>"><?
+			?><input type="text" name="tagset"><?
+			?><input type="submit" value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags"><?
 		?></form><?
 	}
 	?></p></div><?
@@ -303,8 +312,8 @@ function qdb_tags_filter() {
 			$stmt = $db->prepare("SELECT * FROM tags WHERE id IN (".implode(",", $tags_list).") ORDER BY name");
 			$stmt->execute();
 			while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
-				?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_del($tag->id)?>"
-					title="remove '<?=qdb_htmlentities($tag->name)?>' from tag filter<?=qdb_tag_creator($tag)?>">!<?=qdb_htmlentities($tag->name)?></a></li><?
+				?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_del($tag->id)?>"<?
+					?> title="remove '<?=qdb_htmlentities($tag->name)?>' from tag filter<?=qdb_tag_creator($tag)?>">!<?=qdb_htmlentities($tag->name)?></a></li><?
 			}
 			$stmt->closeCursor();
 		} catch (PDOException $e) {
