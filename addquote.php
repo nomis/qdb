@@ -65,12 +65,12 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 			$oktags = array();
 			if (!$config['tags_useronly'] || $user !== FALSE) {
 				$stmt_ins = $db->prepare("INSERT INTO tags (name, "
-					.($users === NULL ? "" : "users_id, ")."ip) VALUES(:name, "
-					.($users === NULL ? "" : ":userid, ").":ip)");
+					.($user === NULL ? "" : "users_id, ")."ip) VALUES(:name, "
+					.($user === NULL ? "" : ":userid, ").":ip)");
 				$stmt_get = $db->prepare("SELECT * FROM quotes_tags WHERE quotes_id=:quoteid AND tags_id=:tagid");
 				$stmt_add = $db->prepare("INSERT INTO quotes_tags (quotes_id, tags_id, "
-					.($users === NULL ? "" : "users_id, ")."ip) VALUES(:quoteid, :tagid, "
-					.($users === NULL ? "" : ":userid, ").":ip)");
+					.($user === NULL ? "" : "users_id, ")."ip) VALUES(:quoteid, :tagid, "
+					.($user === NULL ? "" : ":userid, ").":ip)");
 
 				foreach (explode(" ", $_POST["tags"]) as $tag) {
 					if ($tag == "") { continue; }
