@@ -88,11 +88,24 @@ function qdb_footer() {
 }
 
 function qdb_sanitise($str) {
-	$str = trim($str);
+	$str = "\n".$str."\n";
+
+	// strip control chars and colours
 	$str = preg_replace('/[\x00-\x02\x04-\x09\x0B-\x0C\x0E-\x19]/', '', $str);
 	$str = preg_replace('/\x03[0-9]{0,2}(,[0-9]{0,2})?/', '', $str);
-	$str = preg_replace('/\x0D\x0A/', "\n", $str);
-	$str = preg_replace('/\x0D/', "\n", $str);
+
+	// convert CRLF to LF then CR to LF
+	$str = preg_replace('/\r\n/', "\n", $str);
+	$str = preg_replace('/\r/', "\n", $str);
+
+	// remove preceding and trailing whitespace on each line, preserving indented actions
+	$str = preg_replace('/\n[\t ]+( \*)?/', "\n\$1", $str);
+	$str = preg_replace('/[\t ]+\n/', "\n", $str);
+
+	// remove preceding and trailing newlines
+	$str = preg_replace('/^\n+/', '', $str);
+	$str = preg_replace('/\n+$/', '', $str);
+
 	return $str;
 }
 
