@@ -30,8 +30,8 @@ function modquote_op($op) {
 	var $xhr = new XMLHttpRequest();
 	$xhr.open("GET", $op.href + "&async=1", true);
 	$xhr.onreadystatechange = function() {
-		if ($xhr.readyState == 4 && $xhr.status == 200) {
- 			if ($xhr.responseXML) {
+		if ($xhr.readyState == 4) {
+			if ($xhr.status == 200 && $xhr.responseXML) {
 				$page = $xhr.responseXML;
 
 				if ($page.childNodes.length == 1
@@ -71,7 +71,7 @@ function modquote_op($op) {
 					}
 				}
  			} else {
-				if (confirm("The request to: " + $op.title + " failed... try again?")) {
+				if (confirm("The background request to: " + $op.title + " failed... try again directly?")) {
 					document.location.replace($op.href);
 				}
 			}
