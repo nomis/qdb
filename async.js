@@ -41,7 +41,7 @@ function modquote_op($op) {
 					var $msgs = null;
 					var $quote = null;
 					var $len = $nodes.length;
-					var $i, $n_msgs, $n_quote;
+					var $i, $n_msgs, $p_msgs, $n_quote;
 
 					for ($i = 0; $i < $len; $i++) {
 						if ($nodes[$i].tagName == "msgs") {
@@ -51,23 +51,30 @@ function modquote_op($op) {
 						}
 					}
 
-					if ($msgs) {
-						$n_msgs = document.createElement("p");
-						$n_msgs.innerHTML = $msgs.textContent;
-					}
-
 					if ($quote) {
 						$n_quote = document.createElement("div");
-						$n_quote.setAttribute("class", "quote");
+						$n_quote.setAttribute("class", "quote asyncquote");
 						$n_quote.innerHTML = $quote.textContent;
 
-						if ($msgs) {
-							$n_quote.appendChild($n_msgs);
-						}
-
 						$parent.parentNode.replaceChild($n_quote, $parent);
-					} else if ($msgs) {
-						$parent.appendChild($n_msgs);
+						$parent = $n_quote;
+					}
+
+					if ($msgs) {
+						$n_msgs = document.createElement("div");
+						$n_msgs.setAttribute("class", "asyncmsgs");
+						$n_msgs.setAttribute("onclick", "void(this.parentNode.removeChild(this))");
+						$n_msgs.innerHTML = "<p>" + $msgs.textContent + "</p>";
+
+						$p_msgs = $parent.childNodes[3];
+
+						if ($p_msgs) {
+							if ($p_msgs.getAttribute("class").match("\\basyncmsgs\\b")) {
+								$parent.replaceChild($n_msgs, $p_msgs);
+							} else {
+								$parent.insertBefore($n_msgs, $p_msgs);
+							}
+						}
 					}
 				}
  			} else {

@@ -16,7 +16,7 @@ ul.menu li:before { content: ' / '; }
 ul.menu li:first-child:before { content: ''; }
 ul.menu ul.menu { display: inline; margin: 0; padding: 0; }
 
-#content { min-height: 10em; margin: 0; padding: 0 0.5em 0 0.5em;
+#content { min-height: 10em; margin: -0.5em 0 0 0; padding: 0.5em 0.5em 0 0.5em;
 border-width: 0 1px 0 1px; border-style: solid; border-color: Menu; }
 #content p { margin-top: 0; padding-top: 0.5em; margin-bottom: 0; padding-bottom: 0.5em;
 text-align: justify; }
@@ -66,6 +66,8 @@ div.quote .textmulti { max-height: 15em; overflow: auto; }
 div.quote .ratedown { margin-right: 1em; }
 div.quote .del { margin-right: 1em; }
 div.quote .user { font-weight: bold; }
+div.quote .asyncmsgs { font-size: 0.8em; cursor: pointer; }
+div.quote .asyncmsgs ul.msgs { border-width: 1px 0 0 0; border-color: Menu; }
 
 div.quote .textsingu, div.quote .textmulti { border-width: 0 1px 1px 1px;
 border-style: solid; border-color: transparent; }
