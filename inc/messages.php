@@ -72,6 +72,7 @@ function qdb_die($e) {
 	if (!$header) { qdb_header(); }
 	qdb_err($e->getMessage());
 	qdb_messages();
+	qdb_async_messages();
 	qdb_footer();
 	die();
 }
@@ -103,11 +104,13 @@ function qdb_messages() {
 function qdb_async_messages() {
 	global $msgs;
 
+	if (count($msgs) == 0) { return; }
 	echo '<msgs><![CDATA[<ul class="msgs">';
 	foreach ($msgs as $msg) {
 		echo '<li class="'.$msg['type'].'">'.$msg['text'].'</li>';
 	}
 	echo '</ul>]]></msgs>';
+	$msgs = array();
 }
 
 function qdb_not_admin() {
