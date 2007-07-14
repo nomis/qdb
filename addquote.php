@@ -127,7 +127,9 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 			}
 
 			foreach ($config['email_full'] as $email) {
-				mail($email, "Quote #".$id,
+				mail($email, "Quote #".$id." "
+					."(".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"].")"
+					.(count($oktags) == 0 ? "" : " ".implode(" ", $oktags)),
 					$config['base_url'].'?'.$id."\r\n\r\n"
 					."From: ".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
 					.(count($oktags) == 0 ? "" : "Tags: ".implode(" ", $oktags)."\r\n")
