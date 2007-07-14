@@ -108,6 +108,9 @@ function qdb_sanitise($str) {
 	$str = preg_replace('/\n[\t ]+[^\*]/', "\n", $str);
 	$str = preg_replace('/[\t ]+\n/', "\n", $str);
 
+	// change (nick) to <nick>
+	$str = preg_replace('/\n\(([^ ]+)\) /', "\n<".'$1'."> ", $str);
+
 	// remove preceding and trailing newlines
 	$str = preg_replace('/^\n+/', '', $str);
 	$str = preg_replace('/\n+$/', '', $str);
