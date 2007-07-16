@@ -17,9 +17,10 @@
 
 	$Id$
 */
-if (isset($_GET["async"])) {
+if (isset($_REQUEST["async"])) {
 	define("QDB_ASYNC", TRUE);
-	header("Content-Type: text/xml; charset=UTF-8");
+	header("Content-Type: application/xml; charset=UTF-8");
+	echo '<?xml version="1.0"?>';
 	echo '<qdb>';
 }
 
@@ -47,6 +48,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 	$stmt_clr = $db->prepare("DELETE FROM tags WHERE id=:tagid AND NOT EXISTS"
 		." (SELECT tags_id FROM quotes_tags WHERE tags_id=:tagid LIMIT 1)");
 
+	$anything = FALSE;
 	foreach (explode(" ", $tags) as $tag) {
 		if ($tag == "") { continue; }
 
@@ -57,6 +59,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 			$tag = substr($tag, 1);
 		} else if (!preg_match($config['tags_regexp'], $tag)) {
 			qdb_err("Tag '".qdb_htmlentities($tag)."' ignored.");
+			$anything = TRUE;
 			continue;
 		}
 
@@ -71,6 +74,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 				$stmt_ins->execute();
 				if ($stmt_ins->rowCount() <= 0) {
 					qdb_err("Error creating tag '".qdb_htmlentities($tag)."'.");
+					$anything = TRUE;
 					continue;
 				}
 				$tagid = $db->lastInsertId("tags_id_seq");
@@ -82,23 +86,26 @@ function qdb_modquote_tags($quoteid, $tags) {
 			$stmt_get->execute();
 			if ($stmt_get->rowCount() > 0) {
 				qdb_ok("Tag '".qdb_htmlentities($tag)."' already set.");
+				$anything = TRUE;
 			} else {
-					$stmt_add->bindParam(":quoteid", $quoteid);
-					$stmt_add->bindParam(":tagid", $tagid);
-					if ($user !== NULL) {
-						$stmt_add->bindParam(":userid", $user->id);
-					}
-					$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
-					$stmt_add->execute();
-					if ($stmt_add->rowCount() > 0) {
-						qdb_ok("Tag '".qdb_htmlentities($tag)."' added.");
-					}
-					$stmt_add->closeCursor();
+				$stmt_add->bindParam(":quoteid", $quoteid);
+				$stmt_add->bindParam(":tagid", $tagid);
+				if ($user !== NULL) {
+					$stmt_add->bindParam(":userid", $user->id);
+				}
+				$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
+				$stmt_add->execute();
+				if ($stmt_add->rowCount() > 0) {
+					qdb_ok("Tag '".qdb_htmlentities($tag)."' added.");
+					$anything = TRUE;
+				}
+				$stmt_add->closeCursor();
 			}
 			$stmt_get->closeCursor();
 		} else {
 			if ($tagid == NULL) {
 				qdb_err("Tag '".qdb_htmlentities($tag)."' does not exist.");
+				$anything = TRUE;
 				continue;
 			}
 
@@ -107,8 +114,10 @@ function qdb_modquote_tags($quoteid, $tags) {
 			$stmt_del->execute();
 			if ($stmt_del->rowCount() > 0) {
 				qdb_ok("Tag '".qdb_htmlentities($tag)."' removed.");
+				$anything = TRUE;
 			} else {
 				qdb_err("Tag '".qdb_htmlentities($tag)."' not set.");
+				$anything = TRUE;
 			}
 			$stmt_del->closeCursor();
 
@@ -117,7 +126,8 @@ function qdb_modquote_tags($quoteid, $tags) {
 			if ($stmt_clr->rowCount() > 0) { qdb_del_tag($tag); }
 				$stmt_clr->closeCursor();
 			}
-	}
+		}
+	return $anything;
 }
 
 if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
@@ -341,7 +351,9 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 			qdb_not_tags();
 		} else {
 			try {
-				qdb_modquote_tags($_POST["id"], $_POST["tagset"]);
+				if (!qdb_modquote_tags($_POST["id"], $_POST["tagset"])) {
+					qdb_err("No tags specified.");
+				}
 
 				$db->commit();
 				$db->beginTransaction();

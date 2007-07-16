@@ -267,12 +267,16 @@ function qdb_show($quote, $tags, $single = FALSE) {
 			?></ul><?
 	}
 	if (!$config['tags_useronly'] || $user !== FALSE) {
-			?><form class="quote" method="post" action="modquote.php"><?
+			?><form class="quote" method="post" action="modquote.php" onsubmit="return modquote_tags(this)"><?
 				?><input type="hidden" name="id" value="<?=$quote->id?>"><?
+				?><input type="hidden" name="var_asyncdisabled" value="0"><?
 				if (defined("QDB_ASYNC")) { echo '</input>'; }
-				?><input type="text" name="tagset"><?
+				?><input type="text" name="tagset"<?
+				?> title="tags to Add to<?=($user !== FALSE && $user->admin) ? "/Remove from" : ""?> #<?=$quote->id?>"><?
 				if (defined("QDB_ASYNC")) { echo '</input>'; }
-				?><input type="submit" onclick="return modquote_tags(this)" value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags"><?
+				?><input type="submit"<?
+				?> value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags"<?
+				?> title="modify #<?=$quote->id?>'s tags"><?
 				if (defined("QDB_ASYNC")) { echo '</input>'; }
 			?></form><?
 	}
