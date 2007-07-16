@@ -45,14 +45,6 @@ td.small { font-size: 0.8em; }
 td.verysmall { font-size: 0.7em; }
 table.users tr.moo, table.tags tr.moo { color: InfoText; background-color: InfoBackground; }
 
-
-div.quote:hover .header { color: MenuText; background-color: Menu; }
-
-div.quote .op { padding: 0 0.5em 0 0.5em; text-decoration: none;
-border-width: 1px; border-style: solid; border-color: transparent; }
-div.quote:hover .op { background-color: ThreeDFace;
-border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
-
 #content div.quote p { margin: 0; padding: 0; }
 div.quote { margin: 0.5em 0 1em 0; }
 div.quote .textmulti, div.quote .textsingu { font-size: 9pt;
@@ -68,10 +60,33 @@ div.quote .del { margin-right: 1em; }
 div.quote .user { font-weight: bold; }
 div.quote .asyncmsgs { font-size: 0.8em; cursor: pointer; }
 div.quote .asyncmsgs ul.msgs { border-width: 1px 0 0 0; border-color: Menu; }
-
 div.quote .textsingu, div.quote .textmulti { border-width: 0 1px 1px 1px;
 border-style: solid; border-color: transparent; }
-div.quote:hover .textsingu, div.quote:hover .textmulti { border-color: Menu; }
+div.quote .op { padding: 0 0.5em 0 0.5em; text-decoration: none;
+border-width: 1px; border-style: solid; border-color: transparent; }
 
-div.quote form, div.quote .userandip, div.quote .op { visibility: hidden; }
-div.quote:hover form, div.quote:hover .userandip, div.quote:hover .op, div.quote .rateup, div.quote .ratedown { visibility: visible; }
+@media screen {
+	div.quote form, div.quote .userandip, div.quote .op { visibility: hidden; }
+
+	div.quote:hover .op, div.quote .op:focus { background-color: ThreeDFace;
+	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
+
+	div.quote:hover .header { color: MenuText; background-color: Menu; }
+	div.quote:hover .textsingu, div.quote:hover .textmulti, div.quote .textsingu:focus, div.quote .textmulti:focus { border-color: Menu; }
+
+	div.quote:hover form, div.quote:hover .userandip, div.quote:hover .op, div.quote *:focus, div.quote .rateup, div.quote .ratedown { visibility: visible; }
+}
+
+@media print, projection {
+	html { margin-left: inherit; margin-right: inherit; }
+	div.quote { margin-bottom: 2em; }
+	div.quote .rating:before { content: ''; }
+	div.quote .rating:after { content: ''; }
+	div.quote .textmulti { max-height: inherit; overflow: inherit; }
+	a { color: inherit; background-color: inherit; text-decoration: none; }
+	#top, #bottom { color: inherit; background-color: inherit; }
+	#top, #content, #bottom { border-left: none; border-right: none; }
+	#top { border-top: none; border-bottom: 1px solid; }
+	#bottom { border-top: 1px solid; border-bottom: none; }
+	div.quote form, div.quote .userandip, div.quote .op, dl.tags, ul.menu { display: none; }
+}
