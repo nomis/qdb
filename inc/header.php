@@ -1,17 +1,17 @@
 <?
 /*
-	Copyright ©2007 Simon Arlott
+	Copyright ©2008 Simon Arlott
 
 	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License v3
+	modify it under the terms of the GNU Affero General Public License v3
 	as published by the Free Software Foundation.
 
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-	GNU General Public License for more details.
+	GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
+	You should have received a copy of the GNU Affero General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
@@ -21,7 +21,7 @@
 <html lang="en-GB"><?
 	?><head><?
 		?><title><?=qdb_htmlentities($config['name'])?><?=isset($title) ? ": ".qdb_htmlentities($title) : ""?></title><?
-		?><meta name="generator" content="QDB 2.0"><!-- QDB 2.0 ©2007 Simon Arlott --><?
+		?><meta name="generator" content="QDB 2.0"><!-- QDB 2.0 ©2008 Simon Arlott --><?
 		?><link rel="stylesheet" href="default.css" title="Stylesheet" type="text/css"><?
 		?><script language="JavaScript" type="application/javascript" src="async.js"></script><?
 	?></head><?

@@ -10,8 +10,7 @@ TAR=tar
 TOUCH=touch
 XARGS=xargs
 
-NAME=qdb-2_0
-EXCL=inc/config.php
+NAME=qdb-2_1
 
 dist:
 	$(RM) -rf .tmp/ $(NAME).tar.gz
