@@ -274,7 +274,7 @@ function qdb_show($quote, $tags, $single = FALSE) {
 				?><input type="text" name="tagset"<?
 				?> title="tags to Add to<?=($user !== FALSE && $user->admin) ? "/Remove from" : ""?> #<?=$quote->id?>"><?
 				if (defined("QDB_ASYNC")) { echo '</input>'; }
-				?><input type="submit"<?
+				?><input type="submit" name="action"<?
 				?> value="Add<?=($user !== FALSE && $user->admin) ? "/Remove" : ""?> Tags"<?
 				?> title="modify #<?=$quote->id?>'s tags"><?
 				if (defined("QDB_ASYNC")) { echo '</input>'; }
