@@ -67,7 +67,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 		if ($add) {
 			if ($tagid == NULL) {
 				$stmt_ins->bindParam(":name", $tag);
-				if ($user !== NULL) {
+				if ($user !== FALSE) {
 					$stmt_ins->bindParam(":userid", $user->id);
 				}
 				$stmt_ins->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
@@ -90,7 +90,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 			} else {
 				$stmt_add->bindParam(":quoteid", $quoteid);
 				$stmt_add->bindParam(":tagid", $tagid);
-				if ($user !== NULL) {
+				if ($user !== FALSE) {
 					$stmt_add->bindParam(":userid", $user->id);
 				}
 				$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);

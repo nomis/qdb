@@ -85,7 +85,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					$tagid = qdb_get_tag($tag);
 					if ($tagid == NULL) {
 						$stmt_ins->bindParam(":name", $tag);
-						if ($user !== NULL) {
+						if ($user !== FALSE) {
 							$stmt_ins->bindParam(":userid", $user->id);
 						}
 						$stmt_ins->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
@@ -106,7 +106,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					} else {
 						$stmt_add->bindParam(":quoteid", $id);
 						$stmt_add->bindParam(":tagid", $tagid);
-						if ($user !== NULL) {
+						if ($user !== FALSE) {
 							$stmt_add->bindParam(":userid", $user->id);
 						}
 						$stmt_add->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
