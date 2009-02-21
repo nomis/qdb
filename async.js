@@ -138,7 +138,7 @@ function modquote_tags($form) {
 	}
 
 	var $parent = $form.parentNode;
-	var $title = $form.action.title;
+	var $title = $form.action_.title;
 
 	if ($form.var_asyncdisabled.value == 1) return true;
 

@@ -25,8 +25,8 @@ if ($user === FALSE || !$user->admin) {
 	qdb_not_admin();
 } else {
 	try {
-		if (isset($_POST["id"]) && qdb_digit($_POST["id"]) && isset($_POST["name"]) && isset($_POST["action"])) {
-			if ($_POST["action"] == "Rename") {
+		if (isset($_POST["id"]) && qdb_digit($_POST["id"]) && isset($_POST["name"]) && isset($_POST["action_"])) {
+			if ($_POST["action_"] == "Rename") {
 				$tagid = qdb_get_tag($_POST["name"]);
 
 				if ($tagid != $_POST["id"]) {
@@ -58,7 +58,7 @@ if ($user === FALSE || !$user->admin) {
 						$stmt->closeCursor();
 					}
 				}
-			} else if ($_POST["action"] == "Delete") {
+			} else if ($_POST["action_"] == "Delete") {
 				$stmt = $db->prepare("DELETE FROM tags WHERE id=:tagid");
 				$stmt->bindParam(":tagid", $_POST["id"]);
 				$stmt->execute();
@@ -96,8 +96,8 @@ if ($user === FALSE || !$user->admin) {
 					?><form class="tags" method="post" action="tags.php"><?
 						?><input type="hidden" name="id" value="<?=$tag->id?>"><?
 						?><input type="text" name="name" value="<?=qdb_htmlentities($tag->name)?>"><?
-						?><input type="submit" name="action" value="Rename"><?
-						?><input type="submit" name="action" value="Delete"><?
+						?><input type="submit" name="action_" value="Rename"><?
+						?><input type="submit" name="action_" value="Delete"><?
 					?></form><?
 				?></td><?
 			?></tr><?

@@ -25,8 +25,8 @@ if ($user === FALSE || !$user->admin) {
 	qdb_not_admin();
 } else {
 	try {
-		if (isset($_POST["id"]) && qdb_digit($_POST["id"]) && isset($_POST["name"]) && isset($_POST["pass"]) && isset($_POST["action"])) {
-			if ($_POST["action"] == "Rename") {
+		if (isset($_POST["id"]) && qdb_digit($_POST["id"]) && isset($_POST["name"]) && isset($_POST["pass"]) && isset($_POST["action_"])) {
+			if ($_POST["action_"] == "Rename") {
 				$stmt = $db->prepare("SELECT * FROM users WHERE name=:name AND id!=:userid");
 				$stmt->bindParam(":userid", $_POST["id"]);
 				$stmt->bindParam(":name", $_POST["name"]);
@@ -49,7 +49,7 @@ if ($user === FALSE || !$user->admin) {
 					}
 					$stmt->closeCursor();
 				}
-			} else if ($_POST["action"] == "Make User") {
+			} else if ($_POST["action_"] == "Make User") {
 				$stmt = $db->prepare("UPDATE users SET admin=FALSE WHERE id=:userid AND admin=TRUE AND nodelete=FALSE");
 				$stmt->bindParam(":userid", $_POST["id"]);
 				$stmt->execute();
@@ -57,7 +57,7 @@ if ($user === FALSE || !$user->admin) {
 					qdb_ok("Removed admin privileges from user.");
 				}
 				$stmt->closeCursor();
-			} else if ($_POST["action"] == "Make Admin") {
+			} else if ($_POST["action_"] == "Make Admin") {
 				$stmt = $db->prepare("UPDATE users SET admin=TRUE WHERE id=:userid AND admin=FALSE AND nodelete=FALSE");
 				$stmt->bindParam(":userid", $_POST["id"]);
 				$stmt->execute();
@@ -65,7 +65,7 @@ if ($user === FALSE || !$user->admin) {
 					qdb_ok("Gave admin privileges to user.");
 				}
 				$stmt->closeCursor();
-			} else if ($_POST["action"] == "Change Password") {
+			} else if ($_POST["action_"] == "Change Password") {
 				if (trim($_POST["pass"]) == "") {
 					qdb_err("Password is blank.");
 				} else {
@@ -78,7 +78,7 @@ if ($user === FALSE || !$user->admin) {
 					}
 					$stmt->closeCursor();
 				}
-			} else if ($_POST["action"] == "Delete") {
+			} else if ($_POST["action_"] == "Delete") {
 				$stmt = $db->prepare("DELETE FROM users WHERE id=:userid AND nodelete=FALSE");
 				$stmt->bindParam(":userid", $_POST["id"]);
 				$stmt->execute();
@@ -86,7 +86,7 @@ if ($user === FALSE || !$user->admin) {
 					qdb_ok("Deleted user.");
 				}
 				$stmt->closeCursor();
-			} else if ($_POST["action"] == "Create User") {
+			} else if ($_POST["action_"] == "Create User") {
 				$stmt = $db->prepare("SELECT * FROM users WHERE name=:name");
 				$stmt->bindParam(":name", $_POST["name"]);
 				$stmt->execute();
@@ -143,13 +143,13 @@ if ($user === FALSE || !$user->admin) {
 					?><form class="users" method="post" action="users.php"><?
 						?><input type="hidden" name="id" value="<?=$auser->id?>"><?
 						?><input type="password" name="pass" value=""><?
-						?><input type="submit" name="action" value="Change Password"><?
-						?><input type="submit" name="action" value="Make User"><?
+						?><input type="submit" name="action_" value="Change Password"><?
+						?><input type="submit" name="action_" value="Make User"><?
 						?><br><?
 						?><input type="text" name="name" value="<?=qdb_htmlentities($auser->name, ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")?>"><?
-						?><input type="submit" name="action" value="Rename"><?
-						?><input type="submit" name="action" value="Delete"><?
-						?><input type="submit" name="action" value="Make Admin"><?
+						?><input type="submit" name="action_" value="Rename"><?
+						?><input type="submit" name="action_" value="Delete"><?
+						?><input type="submit" name="action_" value="Make Admin"><?
 						?><br><?
 					?></form><?
 				?></td><?
@@ -169,7 +169,7 @@ if ($user === FALSE || !$user->admin) {
 		?><label for="name">Name</label>: <input type="text" name="name"><br><?
 		?><label for="pass">Pass</label>: <input type="password" name="pass"><br><?
 		?><input type="checkbox" name="admin"><label for="admin">Admin</label><?
-		?><input type="submit" name="action" value="Create User"><?
+		?><input type="submit" name="action_" value="Create User"><?
 	?></form><?
 }
 qdb_footer();
