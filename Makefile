@@ -10,7 +10,7 @@ TAR=tar
 TOUCH=touch
 XARGS=xargs
 
-NAME=qdb-2_3
+NAME=qdb-2_4
 
 dist:
 	$(RM) -rf .tmp/ $(NAME).tar.gz
