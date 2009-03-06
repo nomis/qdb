@@ -25,6 +25,3 @@ dist:
 
 	$(RM) -rf .tmp/
 	$(LS) -lh $(NAME).tar.bz2
-
-ps:
-	$(SVN) ls -R | $(GREP) -vE '/$$' | $(XARGS) $(GREP) -l '$$Id' | $(XARGS) $(SVN) ps svn:keywords Id

@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008 Simon Arlott
+	Copyright ©2008-2009  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -13,9 +13,6 @@
 
 	You should have received a copy of the GNU Affero General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
-	$Id$
 */
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en-GB"><?

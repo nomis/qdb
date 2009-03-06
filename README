@@ -8,6 +8,4 @@
 The AGPLv3 prohibits running modified versions without providing the source code,
 the inc/config.php file is not considered part of a derivative work providing that
 the inc/config.php.dist file is also kept up to date. A GNU makefile is included to
-aid creation of an archive from SVN.
-
-$Id$
+aid creation of an archive.
