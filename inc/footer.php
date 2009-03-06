@@ -18,7 +18,7 @@
 include("menu.php")
 ?><div id="bottom"><?
 	?><p><?
-		?><a href="qdb-2_4.tar.bz2" title="QDB 2.4 source">QDB 2.4</a><?
+		?><a href="qdb-2_5.tar.bz2" title="QDB 2.5 source">QDB 2.5</a><?
 		?> | <?=$quotes_count->count?> quote<?=$quotes_count->count == 1 ? "" : "s"?>,<?
 		?> <?=$tags_count->count?> tag<?=$tags_count->count == 1 ? "" : "s"?><?
 	?></p><?
