@@ -56,7 +56,7 @@ try {
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$user = NULL;
 	$pass = NULL;
-	$db->exec("SELECT set_curcfg('default')");
+	//$db->exec("SELECT set_curcfg('default')");
 
 	$db->beginTransaction();
 	$stmt = $db->prepare("SELECT COUNT(id) AS count FROM quotes");

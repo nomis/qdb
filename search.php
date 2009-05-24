@@ -53,7 +53,7 @@ if (isset($_GET["q1"]) && $_GET["q1"] != "") {
 	try {
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
-		$stmt = $db->prepare("SELECT to_tsquery('default', :search)");
+		$stmt = $db->prepare("SELECT to_tsquery(:search)");
 		$stmt->bindParam(":search", $_GET["q1"]);
 
 		$stmt->execute();
@@ -96,7 +96,7 @@ if ($ok && ((isset($_GET["q1"]) && $_GET["q1"] != "") || (isset($_GET["q2"]) && 
 	$sql = "quotes.hide=FALSE";
 	$bind = array();
 	if (isset($_GET["q1"]) && $_GET["q1"] != "") {
-		$sql .= " AND (quotes.quote_idx @@ to_tsquery('default', :tsearch))";
+		$sql .= " AND (quotes.quote_idx @@ to_tsquery(:tsearch))";
 		$bind[":tsearch"] = $_GET["q1"];
 	}
 	if (isset($_GET["q2"]) && $_GET["q2"] != "") {
