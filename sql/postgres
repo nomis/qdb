@@ -16,14 +16,13 @@ CREATE TABLE quotes (
 
 	-- data
 	quote TEXT UNIQUE NOT NULL,
-	rating INT NOT NULL DEFAULT 0,
 	flag BOOL NOT NULL DEFAULT FALSE,
 	hide BOOL NOT NULL DEFAULT FALSE,
 
 	-- metadata
 	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	users_id BIGINT,
-	ip INET,
+	ip INET NOT NULL,
 	quote_idx TSVECTOR,
 
 	PRIMARY KEY (id),
@@ -46,7 +45,7 @@ CREATE TABLE tags (
 	-- metadata
 	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	users_id BIGINT,
-	ip INET,
+	ip INET NOT NULL,
 
 	PRIMARY KEY (id),
 	FOREIGN KEY (users_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
@@ -62,7 +61,7 @@ CREATE TABLE quotes_tags (
 	-- metadata
 	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	users_id BIGINT,
-	ip INET,
+	ip INET NOT NULL,
 
 	PRIMARY KEY (quotes_id, tags_id),
 	FOREIGN KEY (quotes_id) REFERENCES quotes (id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -75,14 +74,23 @@ CREATE INDEX quotes_tags_tags_id ON quotes_tags (tags_id);
 CREATE TABLE votes (
 	-- data
 	quotes_id BIGINT NOT NULL,
-	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	users_id BIGINT,
-	ip INET,
+	good BOOL NOT NULL,
 
 	-- metadata
-	vote INT NOT NULL,
+	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	users_id BIGINT,
+	ip INET NOT NULL,
 
 	FOREIGN KEY (quotes_id) REFERENCES quotes (id) ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (users_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 CREATE INDEX votes_quotes_id ON votes (quotes_id);
+CREATE INDEX votes_ip_ts ON votes (ip, ts DESC);
+CREATE INDEX votes_users_id_ts ON votes (users_id, ts DESC);
+CREATE INDEX votes_quotes_id_vote_up ON votes (quotes_id) WHERE good;
+CREATE INDEX votes_quotes_id_vote_down ON votes (quotes_id) WHERE NOT good;
+
+CREATE VIEW rated_quotes AS SELECT quotes.*,
+	(SELECT COUNT(quotes_id) FROM votes WHERE votes.quotes_id = quotes.id AND good)
+	- (SELECT COUNT(quotes_id) FROM votes WHERE votes.quotes_id = quotes.id AND NOT good)
+	AS rating FROM quotes;

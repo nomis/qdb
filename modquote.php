@@ -129,40 +129,54 @@ function qdb_modquote_tags($quoteid, $tags) {
 
 if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 	if (isset($_GET["rate"])) {
-		if ($_GET["rate"] < 0) { $_GET["rate"] = -1; } else { $_GET["rate"] = 1; }
-
 		qdb_header("Rate #".$_GET["id"]);
-		if (!qdb_secure(array("id","rate","now"))) {
+		if (!qdb_secure(array("id","rate","now")) || $_GET["rate"] == 0) {
 			qdb_err("Invalid URL parameters.");
 		} else {
-			try {
-				$db->exec("DELETE FROM votes WHERE ts < CURRENT_DATE");
+			$_GET["rate"] = $_GET["rate"] > 0 ? "t" : "f";
 
-				$stmt = $db->prepare("SELECT * FROM votes WHERE quotes_id=:quoteid AND vote=:vote AND ("
-					.($user === FALSE ? "" : "users_id=:userid OR ")."ip=:ip)");
+			try {
+				$stmt = $db->prepare("SELECT * FROM votes WHERE quotes_id=:quoteid AND ("
+					.($user === FALSE ? "" : "users_id=:userid OR ")."ip=:ip) AND ts >= CURRENT_DATE");
 				$stmt->bindParam(":quoteid", $_GET["id"]);
-				$stmt->bindParam(":vote", $_GET["rate"]);
 				if ($user !== FALSE) {
 					$stmt->bindParam(":userid", $user->id);
 				}
 				$stmt->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
 
 				$stmt->execute();
-				if ($stmt->fetch(PDO::FETCH_OBJ)) {
+				if ($stmt->rowCount() > 0) {
+					$vote = $stmt->fetch(PDO::FETCH_OBJ);
 					$stmt->closeCursor();
 
-					qdb_err('You\'ve already rated that quote today!');
+					if ($vote->good == TRUE && $_GET["rate"] == "t") {
+						qdb_err('You\'ve already rated that quote up today!');
+					} else if ($vote->good == FALSE && $_GET["rate"] == "f") {
+						qdb_err('You\'ve already rated that quote down today!');
+					} else {
+						$stmt = $db->prepare("DELETE FROM votes WHERE quotes_id=:quoteid AND ("
+							.($user === FALSE ? "" : "users_id=:userid OR ")."ip=:ip) AND ts >= CURRENT_DATE");
+						$stmt->bindParam(":quoteid", $_GET["id"]);
+						if ($user !== FALSE) {
+							$stmt->bindParam(":userid", $user->id);
+						}
+						$stmt->bindParam(":ip", $_SERVER["REMOTE_ADDR"]);
+
+						$stmt->execute();
+						qdb_ok("Previous rating for today cancelled.");
+						$stmt->closeCursor();
+					}
 				} else {
 					$stmt->closeCursor();
 
-					$stmt = $db->prepare("UPDATE quotes SET rating=rating+:vote WHERE id=:quoteid");
-					$stmt2 = $db->prepare("INSERT INTO votes (quotes_id, vote, "
+					$stmt = $db->prepare("SELECT id FROM quotes WHERE id=:quoteid");
+
+					$stmt->bindParam(":quoteid", $_GET["id"]);
+
+					$stmt2 = $db->prepare("INSERT INTO votes (quotes_id, good, "
 						.($user === FALSE ? "" : "users_id, ")."ip)"
 						." VALUES(:quoteid, :vote, "
 						.($user === FALSE ? "" : ":userid, ").":ip)");
-
-					$stmt->bindParam(":quoteid", $_GET["id"]);
-					$stmt->bindParam(":vote", $_GET["rate"]);
 
 					$stmt2->bindParam(":quoteid", $_GET["id"]);
 					$stmt2->bindParam(":vote", $_GET["rate"]);

@@ -18,7 +18,7 @@ function qdb_get_show($id) {
 	global $db, $user;
 
 	try {
-		$stmt = $db->prepare("SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM quotes WHERE id=:quoteid");
+		$stmt = $db->prepare("SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM rated_quotes quotes WHERE id=:quoteid");
 		$stmt->bindParam(":quoteid", $id);
 
 		$stmt->execute();
@@ -67,7 +67,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 	try {
 		$sql = "SELECT tags.id, tags.name, tags.ip, (SELECT users.name FROM users WHERE tags.users_id=users.id) AS users_name, COUNT(quotes_tags) AS count FROM tags"
 			." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
-			." JOIN quotes ON quotes_tags.quotes_id=quotes.id";
+			." JOIN rated_quotes quotes ON quotes_tags.quotes_id=quotes.id";
 		if ($where != "") { $sql .= " WHERE ($where)"; }
 		$tags_list = qdb_tags_list();
 		if (count($tags_list) > 0) {
@@ -120,7 +120,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 	qdb_tags_filter();
 
 	try {
-		$sql = "SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM quotes";
+		$sql = "SELECT *, (SELECT users.name FROM users WHERE quotes.users_id=users.id) AS users_name FROM rated_quotes quotes";
 		if ($where != "") { $sql .= " WHERE ($where)"; }
 		$tags_list = qdb_tags_list();
 		if (count($tags_list) > 0) {
