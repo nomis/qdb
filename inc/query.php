@@ -40,7 +40,7 @@ function qdb_secure($values) {
 	$hash = sha1($config['secret'].$str);
 	$str .= "&amp;hash=$hash";
 
-	return $verifying ? ($hash == $_REQUEST["hash"]) : $str;
+	return $verifying ? (isset($_REQUEST["hash"]) && $hash == $_REQUEST["hash"]) : $str;
 }
 
 
