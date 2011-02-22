@@ -69,7 +69,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 					.($user === FALSE ? "" : "users_id, ")."ip) VALUES(:quoteid, :tagid, "
 					.($user === FALSE ? "" : ":userid, ").":ip)");
 
-				foreach (explode(" ", $_POST["tags"]) as $tag) {
+				foreach (qdb_tag_explode($_POST["tags"]) as $tag) {
 					if ($tag == "") { continue; }
 
 					if (substr($tag, 0, 1) == "!") {

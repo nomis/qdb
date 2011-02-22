@@ -115,6 +115,10 @@ function qdb_sanitise($str) {
 	return $str;
 }
 
+function qdb_tag_explode($str) {
+	return preg_split('/[\s,;]+/', $str);
+}
+
 include("auth.php");
 include("show.php");
 include("query.php");

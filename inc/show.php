@@ -289,7 +289,7 @@ function qdb_show($quote, $tags, $single = FALSE) {
 function qdb_tags_list() {
 	$tags = array();
 	if (isset($_GET["tags"])) {
-		foreach (explode(" ", $_GET["tags"]) as $tag) {
+		foreach (qdb_tag_explode($_GET["tags"]) as $tag) {
 			if (qdb_digit($tag)) { $tags[] = $tag; }
 		}
 	}
@@ -299,7 +299,7 @@ function qdb_tags_list() {
 function qdb_tags_qs_add($tagid) {
 	$tags = array();
 	if (isset($_GET["tags"])) {
-		foreach (explode(" ", $_GET["tags"]) as $tag) {
+		foreach (qdb_tag_explode($_GET["tags"]) as $tag) {
 			if (qdb_digit($tag)) { $tags[] = $tag; }
 		}
 	}
@@ -311,7 +311,7 @@ function qdb_tags_qs_add($tagid) {
 function qdb_tags_qs_del($tagid) {
 	$tags = array();
 	if (isset($_GET["tags"])) {
-		foreach (explode(" ", $_GET["tags"]) as $tag) {
+		foreach (qdb_tag_explode($_GET["tags"]) as $tag) {
 			if (qdb_digit($tag)&& $tag != $tagid) { $tags[] = $tag; }
 		}
 	}

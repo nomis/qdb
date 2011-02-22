@@ -46,7 +46,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 		." (SELECT tags_id FROM quotes_tags WHERE tags_id=:tagid LIMIT 1)");
 
 	$anything = FALSE;
-	foreach (explode(" ", $tags) as $tag) {
+	foreach (qdb_tag_explode($tags) as $tag) {
 		if ($tag == "") { continue; }
 
 		$add = TRUE;
@@ -417,7 +417,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				}
 
 				$oldtags = array();
-				$newtags = explode(" ", $_POST["tags"]);
+				$newtags = qdb_tag_explode($_POST["tags"]);
 				foreach ($tags as $tag) {
 					$oldtags[] = $tag->name;
 					if (!in_array($tag->name, $newtags)) {
