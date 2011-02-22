@@ -434,6 +434,16 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				qdb_die($e);
 			}
 
+			foreach ($config['email_full'] as $email) {
+				mail($email, "Quote #".$_POST["id"]." (".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"].")",
+					$config['base_url'].'?'.$_POST["id"]."\r\n\r\n"
+					."Editor: ".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
+					."\r\n".str_replace("\n","\r\n",$_POST["quote"])
+					."\r\n\r\n-- \r\n".$config['name']."\r\n",
+				"Content-Transfer-Encoding: 8bit\r\n"
+				."Content-Type: text/plain; charset=UTF-8");
+			}
+
 			qdb_messages();
 			qdb_get_show($_POST["id"]);
 		}
