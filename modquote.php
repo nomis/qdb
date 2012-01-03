@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -130,7 +130,7 @@ function qdb_modquote_tags($quoteid, $tags) {
 if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 	if (isset($_GET["rate"])) {
 		qdb_header("Rate #".$_GET["id"]);
-		if (!qdb_secure(array("id","rate","now")) || $_GET["rate"] == 0) {
+		if (!qdb_verify(array("id","rate","now")) || $_GET["rate"] == 0) {
 			qdb_err("Invalid URL parameters.");
 		} else {
 			$_GET["rate"] = $_GET["rate"] > 0 ? "t" : "f";
@@ -211,7 +211,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		if ($_GET["flag"] > 0) { $_GET["flag"] = 1; } else { $_GET["flag"] = 0; }
 
 		qdb_header(($_GET["flag"] == 0 ? "Unflag" : "Flag")." #".$_GET["id"]);
-		if (!qdb_secure(array("id","flag","now"))) {
+		if (!qdb_verify(array("id","flag","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($_GET["flag"] == 0 && ($user === FALSE || !$user->admin)) {
 			qdb_not_admin();
@@ -243,7 +243,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		if ($_GET["hide"] > 0) { $_GET["hide"] = 1; } else { $_GET["hide"] = 0; }
 
 		qdb_header(($_GET["hide"] == 0 ? "show" : "Hide")." #".$_GET["id"]);
-		if (!qdb_secure(array("id","hide","now"))) {
+		if (!qdb_verify(array("id","hide","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($user === FALSE || !$user->admin) {
 			qdb_not_admin();
@@ -273,7 +273,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		qdb_footer();
 	} else if (isset($_GET["del"])) {
 		qdb_header("Delete #".$_GET["id"]);
-		if (!qdb_secure(array("id","del","now"))) {
+		if (!qdb_verify(array("id","del","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($user === FALSE || !$user->admin) {
 			qdb_not_admin();
@@ -306,7 +306,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 		qdb_footer();
 	} else if (isset($_GET["edit"])) {
 		qdb_header("Edit #".$_GET["id"]);
-		if (!qdb_secure(array("id","edit","now"))) {
+		if (!qdb_verify(array("id","edit","now"))) {
 			qdb_err("Invalid URL parameters.");
 		} else if ($user === FALSE || !$user->admin) {
 			qdb_not_admin();

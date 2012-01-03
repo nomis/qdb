@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -40,9 +40,19 @@ function qdb_secure($values) {
 	$hash = sha1($config['secret'].$str);
 	$str .= "&amp;hash=$hash";
 
-	return $verifying ? (isset($_REQUEST["hash"]) && $hash == $_REQUEST["hash"]) : $str;
+	if ($verifying) {
+		return isset($_REQUEST["hash"]) && $hash == $_REQUEST["hash"];
+	}
+	return $str;
 }
 
+function qdb_verify($keys) {
+	$values = array();
+	foreach ($keys as $key) {
+		$values[$key] = "";
+	}
+	return qdb_secure($values);
+}
 
 $qdb_qs = array();
 

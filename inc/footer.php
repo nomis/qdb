@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -18,7 +18,7 @@
 include("menu.php")
 ?><div id="bottom"><?
 	?><p><?
-		?><a href="qdb-2_8.tar.bz2" title="QDB 2.8 source">QDB 2.8</a><?
+		?><a href="qdb-2_9.tar.bz2" title="QDB 2.9 source">QDB 2.9</a><?
 		?> | <?=$quotes_count->count?> quote<?=$quotes_count->count == 1 ? "" : "s"?>,<?
 		?> <?=$tags_count->count?> tag<?=$tags_count->count == 1 ? "" : "s"?><?
 	?></p><?
