@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -34,7 +34,7 @@ if (isset($_GET["q1"])) {
 
 ?><p>Tsearch2 &ndash; use &amp; for AND, | for OR, and ! for NOT, etc. &ndash; <strong>no spaces and no wildcards</strong>.<br><?
 ?>Regexp &ndash; <a href="http://www.postgresql.org/docs/8.2/static/functions-matching.html">SQL regular expression</a> (% for wildcard *, _ for wildcard ?).</p><?
-?><form method="get" action="search.php"><?
+?><form method="get" action="search"><?
 	?><label for="q1">Tsearch2</label>:<?
 	?><input type="hidden" name="tags" value="<?=isset($_GET["tags"]) ? qdb_htmlentities($_GET["tags"]) : ""?>"><?
 	?><input type="text" name="q1" value="<?=isset($_GET["q1"]) ? qdb_htmlentities($_GET["q1"]) : ""?>" size="50"><?

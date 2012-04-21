@@ -332,7 +332,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 
 					?><p>Editing quote #<?=$_GET["id"]?>:</p><?
 
-					?><form method="post" action="modquote.php"><?
+					?><form method="post" action="modquote"><?
 						?><input type="hidden" name="id" value="<?=$_GET["id"]?>"><?
 						?><input type="hidden" name="edit" value="1"><?
 						?><textarea name="quote" rows="15" cols="80"><?=qdb_htmlentities($quote->quote)?></textarea><br><?

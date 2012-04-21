@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -150,7 +150,7 @@ qdb_messages();
 if (!$config["disabled"] || ($user !== FALSE && $user->admin)) {
 	?><p>Please remove timestamps unless necessary.</p><?
 
-	?><form method="post" action="addquote.php"><?
+	?><form method="post" action="addquote"><?
 		?><textarea name="quote" rows="15" cols="80"><?
 			?><?=isset($_POST["quote"]) ? qdb_htmlentities($_POST["quote"]) : ""?><?
 		?></textarea><br><?

@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -205,28 +205,28 @@ function qdb_show($quote, $tags, $single = FALSE) {
 		?><p class="quote"><?
 			?><div class="header"><?
 				?><a href="./?<?=$quote->id?>" title="quote <?=$quote->id?>"><strong class="id">#<?=$quote->id?></strong></a>: <?
-				?><a class="op rateup" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "1"))?>" title="rate #<?=$quote->id?> up">+</a><?
+				?><a class="op rateup" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "rate" => "1"))?>" title="rate #<?=$quote->id?> up">+</a><?
 				?> <em class="rating"><?=$quote->rating?></em> <?
-				?><a class="op ratedown" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "rate" => "-1"))?>" title="rate #<?=$quote->id?> down">-</a><?
+				?><a class="op ratedown" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "rate" => "-1"))?>" title="rate #<?=$quote->id?> down">-</a><?
 
 	if ($user !== FALSE && $user->admin) {
-				?> <a class="op edit" onclick="return modequote_edit(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "edit" => "1"))?>" title="edit #<?=$quote->id?>">&#x00B6;</a><?
+				?> <a class="op edit" onclick="return modequote_edit(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "edit" => "1"))?>" title="edit #<?=$quote->id?>">&#x00B6;</a><?
 
 		if ($quote->flag) {
-				?> <a class="op unflag" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "0"))?>" title="unflag #<?=$quote->id?>">&#x2691;</a><?
+				?> <a class="op unflag" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "flag" => "0"))?>" title="unflag #<?=$quote->id?>">&#x2691;</a><?
 		} else {
-				?> <a class="op flag" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
+				?> <a class="op flag" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
 		}
 
 		if ($quote->hide) {
-				?> <a class="op show" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "0"))?>" title="show #<?=$quote->id?>">&#x2713;</a><?
+				?> <a class="op show" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "hide" => "0"))?>" title="show #<?=$quote->id?>">&#x2713;</a><?
 		} else {
-				?> <a class="op hide" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "hide" => "1"))?>" title="hide #<?=$quote->id?>">&#x2026;</a><?
+				?> <a class="op hide" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "hide" => "1"))?>" title="hide #<?=$quote->id?>">&#x2026;</a><?
 		}
 
-				?> <a class="op del" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "del" => "1"))?>" title="delete #<?=$quote->id?>">&#x2717;</a><?
+				?> <a class="op del" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "del" => "1"))?>" title="delete #<?=$quote->id?>">&#x2717;</a><?
 	} else {
-				?> <a class="op flag" onclick="return modquote_op(this)" href="modquote.php?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
+				?> <a class="op flag" onclick="return modquote_op(this)" href="modquote?<?=qdb_secure(array("id" => $quote->id, "flag" => "1"))?>" title="flag #<?=$quote->id?>">&#x2690;</a><?
 	}
 
 	if ($user !== FALSE && $user->admin) {
@@ -254,7 +254,7 @@ function qdb_show($quote, $tags, $single = FALSE) {
 			?><ul class="tags"><?
 		foreach ($tags as $tag) {
 			if ($single) {
-					?><li><a href="browse.php?tags=<?=$tag->id?>"<?
+					?><li><a href="browse?tags=<?=$tag->id?>"<?
 					?> title="view quotes with tag '<?=qdb_htmlentities($tag->name)?>'<?=qdb_tag_creator($tag)?>"><?=qdb_htmlentities($tag->name)?></a></li><?
 			} else {
 					?><li><a href="?<?=qdb_qs()?>tags=<?=qdb_tags_qs_add($tag->id)?>"<?
@@ -264,7 +264,7 @@ function qdb_show($quote, $tags, $single = FALSE) {
 			?></ul><?
 	}
 	if (!$config['tags_useronly'] || $user !== FALSE) {
-			?><form class="quote" method="post" action="modquote.php" onsubmit="return modquote_tags(this)"><?
+			?><form class="quote" method="post" action="modquote" onsubmit="return modquote_tags(this)"><?
 				?><input type="hidden" name="id" value="<?=$quote->id?>"><?
 				?><input type="hidden" name="var_asyncdisabled" value="0"><?
 				if (defined("QDB_ASYNC")) { echo '</input>'; }

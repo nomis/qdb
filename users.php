@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -137,7 +137,7 @@ if ($user === FALSE || !$user->admin) {
 				?><td align="center"><?=$auser->count_tags?></td><?
 				?><td align="center"><?=$auser->admin ? "Yes" : "No"?></td><?
 				?><td align="right"><?
-					?><form class="users" method="post" action="users.php"><?
+					?><form class="users" method="post" action="users"><?
 						?><input type="hidden" name="id" value="<?=$auser->id?>"><?
 						?><input type="password" name="pass" value=""><?
 						?><input type="submit" name="action_" value="Change Password"><?
@@ -161,7 +161,7 @@ if ($user === FALSE || !$user->admin) {
 	}
 	?></table><?
 	?><hr><?
-	?><form method="post" action="users.php"><?
+	?><form method="post" action="users"><?
 		?><input type="hidden" name="id" value="0"><?
 		?><label for="name">Name</label>: <input type="text" name="name"><br><?
 		?><label for="pass">Pass</label>: <input type="password" name="pass"><br><?

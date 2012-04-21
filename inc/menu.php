@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -16,36 +16,36 @@
 */
 ?><ul class="menu"><?
 	?><li><a href="./">Home</a></li><?
-	?><li><a href="latest.php">Latest</a></li><?
-	?><li><a href="browse.php">Browse</a></li><?
-	?><li><a href="random.php">Random</a> <a href="random.php?minrating=1" title="Random &gt;0">&gt;0</a></li><?
-	?><li><a href="top.php">Top</a></li><?
-	?><li><a href="bottom.php">Bottom</a></li><?
-	?><li><strong><a href="addquote.php">Add Quote</a></strong></li><?
-	?><li><a href="search.php">Search</a></li><?
+	?><li><a href="latest">Latest</a></li><?
+	?><li><a href="browse">Browse</a></li><?
+	?><li><a href="random">Random</a> <a href="random?minrating=1" title="Random &gt;0">&gt;0</a></li><?
+	?><li><a href="top">Top</a></li><?
+	?><li><a href="bottom">Bottom</a></li><?
+	?><li><strong><a href="addquote">Add Quote</a></strong></li><?
+	?><li><a href="search">Search</a></li><?
 
 	if ($user === FALSE) {
-		?><li><a href="login.php">Login</a></li><?
+		?><li><a href="login">Login</a></li><?
 	}
 
-	?><li><form class="quick" method="post" action="index.php"><label for="text">#</label><input type="text" name="id" size="3"></form></li><?
+	?><li><form class="quick" method="post" action="index"><label for="text">#</label><input type="text" name="id" size="3"></form></li><?
 ?></ul><?
 
 if ($user !== FALSE) {
 	?><ul class="menu"><?
 		?><li>User: <?
 			?><ul class="menu"><?
-				?><li><a href="password.php">Change Password</a></li><?
+				?><li><a href="password">Change Password</a></li><?
 			?></ul><?
 		?></li><?
 
 	if ($user->admin) {
 			?><li>Admin: <?
 				?><ul class="menu"><?
-					?><li><a href="pending.php">Pending</a><?=$pending ? " ($pending->count)" : ""?></li><?
-					?><li><a href="flagged.php">Flagged</a><?=$flagged ? " ($flagged->count)" : ""?></li><?
-					?><li><a href="users.php">Users</a></li><?
-					?><li><a href="tags.php">Tags</a></li><?
+					?><li><a href="pending">Pending</a><?=$pending ? " ($pending->count)" : ""?></li><?
+					?><li><a href="flagged">Flagged</a><?=$flagged ? " ($flagged->count)" : ""?></li><?
+					?><li><a href="users">Users</a></li><?
+					?><li><a href="tags">Tags</a></li><?
 				?></ul><?
 			?></li><?
 	}

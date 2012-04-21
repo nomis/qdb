@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011  Simon Arlott
+	Copyright ©2008-2012  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -85,12 +85,12 @@ if ($user === FALSE || !$user->admin) {
 		$i = 0;
 		while ($tag = $stmt->fetch(PDO::FETCH_OBJ)) {
 			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><?
-				?><td><a href="browse.php?tags=<?=$tag->id?>" title="view quotes with tag '<?=qdb_htmlentities($tag->name)?>'"><?=qdb_htmlentities($tag->name)?></a></td><?
+				?><td><a href="browse?tags=<?=$tag->id?>" title="view quotes with tag '<?=qdb_htmlentities($tag->name)?>'"><?=qdb_htmlentities($tag->name)?></a></td><?
 				?><td class="small"><?=str_replace(" ", "&nbsp;", date("Y-m-d H:i:s", strtotime($tag->ts)))?></td><?
 				?><td class="verysmall"><?=($tag->users_name != NULL ? qdb_htmlentities($tag->users_name)."/" : "").$tag->ip?></td><?
 				?><td align="center"><?=$tag->count?></td><?
 				?><td align="right"><?
-					?><form class="tags" method="post" action="tags.php"><?
+					?><form class="tags" method="post" action="tags"><?
 						?><input type="hidden" name="id" value="<?=$tag->id?>"><?
 						?><input type="text" name="name" value="<?=qdb_htmlentities($tag->name)?>"><?
 						?><input type="submit" name="action_" value="Rename"><?
