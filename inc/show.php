@@ -277,7 +277,6 @@ function qdb_show($quote, $tags, $single = FALSE) {
 				if (defined("QDB_ASYNC")) { echo '</input>'; }
 			?></form><?
 	}
-		?></p><?
 
 	if (defined("QDB_ASYNC")) {
 		echo ']]></quote>';
