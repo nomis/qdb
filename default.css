@@ -67,7 +67,7 @@ div.quote .op { padding: 0 0.5em 0 0.5em; text-decoration: none;
 border-width: 1px; border-style: solid; border-color: transparent; }
 
 @media screen {
-	div.quote form, div.quote .userandip, div.quote .op { visibility: hidden; }
+	div.quote form, div.quote .userandip, div.quote .op, div.quote form input { opacity: 0.5; }
 
 	div.quote:hover .op, div.quote .op:focus { background-color: ThreeDFace;
 	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
@@ -75,7 +75,7 @@ border-width: 1px; border-style: solid; border-color: transparent; }
 	div.quote:hover .header { color: MenuText; background-color: Menu; }
 	div.quote:hover .textsingu, div.quote:hover .textmulti, div.quote .textsingu:focus, div.quote .textmulti:focus { border-color: Menu; }
 
-	div.quote:hover form, div.quote:hover .userandip, div.quote:hover .op, div.quote *:focus, div.quote .rateup, div.quote .ratedown { visibility: visible; }
+	div.quote:hover form, div.quote:hover .userandip, div.quote:hover .op, div.quote *:focus, div.quote *:active, div.quote .rateup, div.quote .ratedown { opacity: 1; }
 }
 
 @media print, projection {
