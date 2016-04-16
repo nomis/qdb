@@ -93,6 +93,7 @@ function qdb_getall_show($where = "", $where_bind = array(), $order = "", $limit
 
 			$scale = array();
 			foreach ($tags as $tag) {
+				if (!isset($scale[$tag->count])) { $scale[$tag->count]=0; }
 				$scale[$tag->count]++;
 			}
 			krsort($scale);
