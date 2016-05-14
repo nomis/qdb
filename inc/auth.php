@@ -22,7 +22,7 @@ if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 	try {
 		$stmt = $db->prepare("SELECT * FROM users WHERE name=:name AND pass=:pass");
 		$stmt->bindParam(":name", $_SERVER["PHP_AUTH_USER"]);
-		$stmt->bindParam(":pass", sha1($_SERVER["PHP_AUTH_PW"]));
+		$stmt->bindValue(":pass", sha1($_SERVER["PHP_AUTH_PW"]));
 
 		$stmt->execute();
 		$user = $stmt->fetch(PDO::FETCH_OBJ);

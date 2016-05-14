@@ -29,8 +29,8 @@ if (isset($_POST["pass0"]) && isset($_POST["pass1"]) && isset($_POST["pass2"])) 
 		try {
 			$stmt = $db->prepare("UPDATE users SET pass=:newpass WHERE id=:quoteid AND pass=:oldpass");
 			$stmt->bindParam(":quoteid", $user->id);
-			$stmt->bindParam(":oldpass", sha1($_POST["pass0"]));
-			$stmt->bindParam(":newpass", sha1($_POST["pass1"]));
+			$stmt->bindValue(":oldpass", sha1($_POST["pass0"]));
+			$stmt->bindValue(":newpass", sha1($_POST["pass1"]));
 
 			$stmt->execute();
 			$stmt->fetch(PDO::FETCH_OBJ);
