@@ -1,7 +1,5 @@
 html { margin-left: 10%; margin-right: 10%; font-family: 'Tahoma', sans-serif; }
-#top, #bottom { color: CaptionText; background-color: ActiveCaption;
-border-width: 1px; border-style: solid;
-border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight; }
+#top, #bottom { color: black; background-color: deepskyblue; }
 #bottom { text-align: right; }
 #bottom p { margin: 0; padding: 0.1em; }
 h1, h2 { margin: 0.1em; font-size: 1.5em; }
@@ -10,15 +8,13 @@ h2 { float: right; }
 .clr { clear: both; }
 
 ul.menu { list-style: none; margin: 0 auto 0 auto; padding: 0.2em; text-align: right;
-color: MenuText; background-color: Menu; font-size: 0.9em;
-border-width: 0 1px 0 1px; border-style: solid; border-color: Menu; }
+color: black; background-color: whitesmoke; font-size: 0.9em; }
 ul.menu li { display: inline; }
 ul.menu li:before { content: ' / '; }
 ul.menu li:first-child:before { content: ''; }
 ul.menu ul.menu { display: inline; margin: 0; padding: 0; }
 
-#content { min-height: 10em; margin: -0.5em 0 0 0; padding: 0.5em 0.5em 0 0.5em;
-border-width: 0 1px 0 1px; border-style: solid; border-color: Menu; }
+#content { min-height: 10em; margin: -0.5em 0 0 0; padding: 0.5em 0.5em 0 0.5em; }
 #content p { margin-top: 0; padding-top: 0.5em; margin-bottom: 0; padding-bottom: 0.5em;
 text-align: justify; }
 
@@ -60,7 +56,7 @@ div.quote .ratedown { margin-right: 1em; }
 div.quote .del { margin-right: 1em; }
 div.quote .user { font-weight: bold; }
 div.quote .asyncmsgs { font-size: 0.8em; cursor: pointer; }
-div.quote .asyncmsgs ul.msgs { border-width: 1px 0 0 0; border-color: Menu; }
+div.quote .asyncmsgs ul.msgs { border-width: 1px 0 0 0; border-color: whitesmoke; }
 div.quote .textsingu, div.quote .textmulti { border-width: 0 1px 1px 1px;
 border-style: solid; border-color: transparent; }
 div.quote .op { padding: 0 0.5em 0 0.5em; text-decoration: none;
@@ -72,8 +68,8 @@ border-width: 1px; border-style: solid; border-color: transparent; }
 	div.quote:hover .op, div.quote .op:focus { background-color: ThreeDFace;
 	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight; }
 
-	div.quote:hover .header { color: MenuText; background-color: Menu; }
-	div.quote:hover .textsingu, div.quote:hover .textmulti, div.quote .textsingu:focus, div.quote .textmulti:focus { border-color: Menu; }
+	div.quote:hover .header { color: black; background-color: gainsboro; }
+	div.quote:hover .textsingu, div.quote:hover .textmulti, div.quote .textsingu:focus, div.quote .textmulti:focus { border-color: gainsboro; }
 
 	div.quote:hover form, div.quote:hover .userandip, div.quote:hover .op, div.quote *:focus, div.quote *:active, div.quote .rateup, div.quote .ratedown { opacity: 1; }
 }
