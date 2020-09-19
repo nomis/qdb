@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2012  Simon Arlott
+	Copyright ©2008-2012,2020  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -32,10 +32,10 @@ if (isset($_GET["q1"])) {
 	$_GET["q1"] = preg_replace('/!+/', '!', $_GET["q1"]);
 }
 
-?><p>Tsearch2 &ndash; use &amp; for AND, | for OR, and ! for NOT, etc. &ndash; <strong>no spaces and no wildcards</strong>.<br><?
-?>Regexp &ndash; <a href="http://www.postgresql.org/docs/8.2/static/functions-matching.html">SQL regular expression</a> (% for wildcard *, _ for wildcard ?).</p><?
+?><p>Tsearch &ndash; <a href="https://www.postgresql.org/docs/10/datatype-textsearch.html#DATATYPE-TSQUERY">use &amp; for AND, | for OR, and ! for NOT, etc.</a> &ndash; <strong>no spaces and no wildcards</strong>.<br><?
+?>Regexp &ndash; <a href="http://www.postgresql.org/docs/10/static/functions-matching.html">SQL regular expression</a> (% for wildcard *, _ for wildcard ?).</p><?
 ?><form method="get" action="search"><?
-	?><label for="q1">Tsearch2</label>:<?
+	?><label for="q1">Tsearch</label>:<?
 	?><input type="hidden" name="tags" value="<?=isset($_GET["tags"]) ? qdb_htmlentities($_GET["tags"]) : ""?>"><?
 	?><input type="text" name="q1" value="<?=isset($_GET["q1"]) ? qdb_htmlentities($_GET["q1"]) : ""?>" size="50"><?
 	?><input type="submit" value="Submit Query"><br><?
@@ -60,7 +60,7 @@ if (isset($_GET["q1"]) && $_GET["q1"] != "") {
 		if ($stmt->rowCount() <= 0) {
 			$err = $stmt->errorInfo();
 			$stmt->closeCursor();
-			qdb_err(qdb_htmlentities('Tsearch2: '.$err[2]));
+			qdb_err(qdb_htmlentities('Tsearch: '.$err[2]));
 			$ok = FALSE;
 		}
 		$stmt->closeCursor();
@@ -96,7 +96,7 @@ if ($ok && ((isset($_GET["q1"]) && $_GET["q1"] != "") || (isset($_GET["q2"]) && 
 	$sql = "quotes.hide=FALSE";
 	$bind = array();
 	if (isset($_GET["q1"]) && $_GET["q1"] != "") {
-		$sql .= " AND (quotes.quote_idx @@ to_tsquery(:tsearch))";
+		$sql .= " AND (to_tsvector('english', quotes.quote) @@ to_tsquery('english', :tsearch))";
 		$bind[":tsearch"] = $_GET["q1"];
 	}
 	if (isset($_GET["q2"]) && $_GET["q2"] != "") {

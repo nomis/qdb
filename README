@@ -1,5 +1,4 @@
-* Will currently only work with postgresql (load tsearch2 first),
-  don't be fooled by the use of PDO...
+* Will currently only work with PostgreSQL, don't be fooled by the use of PDO...
 * SQL creation script(s) are in sql/
 
 * Copy inc/config.php.dist to inc/config.php and change the 'secret' value!

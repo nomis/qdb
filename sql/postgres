@@ -23,7 +23,6 @@ CREATE TABLE quotes (
 	ts TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	users_id BIGINT,
 	ip INET NOT NULL,
-	quote_idx TSVECTOR,
 
 	PRIMARY KEY (id),
 	FOREIGN KEY (users_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL
@@ -32,9 +31,7 @@ CREATE INDEX quotes_users_id ON quotes (users_id);
 CREATE INDEX quotes_ip ON quotes (ip);
 CREATE INDEX quotes_flag ON quotes (flag);
 CREATE INDEX quotes_hide ON quotes (hide);
-CREATE INDEX quotes_quote_idx ON quotes USING GIST(quote_idx);
-CREATE TRIGGER quotes_idx BEFORE UPDATE OR INSERT ON quotes
-	FOR EACH ROW EXECUTE PROCEDURE tsearch2(quote_idx, quote);
+CREATE INDEX quotes_tsearch ON quotes USING GIN (to_tsvector('english', quote));
 
 CREATE TABLE tags (
 	id BIGSERIAL,
