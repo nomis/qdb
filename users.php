@@ -106,7 +106,7 @@ if ($user === FALSE || !$user->admin) {
 					$stmt->bindParam(":admin", $admin);
 					$stmt->execute();
 					if ($stmt->rowCount() > 0) {
-						qdb_ok("Created user '".qdb_htmlentities($_POST["name"], ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")."'.", ENT_COMPAT, "UTF-8");
+						qdb_ok("Created user '".qdb_htmlentities($_POST["name"])."'");
 					}
 					$stmt->closeCursor();
 				}
@@ -132,7 +132,7 @@ if ($user === FALSE || !$user->admin) {
 		$i = 0;
 		while ($auser = $stmt->fetch(PDO::FETCH_OBJ)) {
 			?><tr<?=$i++ % 2 == 0 ? ' class="moo"' : ''?>><?
-				?><td><?=qdb_htmlentities($auser->name, ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")?></td><?
+				?><td><?=qdb_htmlentities($auser->name)?></td><?
 				?><td align="center"><?=$auser->count_quotes?></td><?
 				?><td align="center"><?=$auser->count_tags?></td><?
 				?><td align="center"><?=$auser->admin ? "Yes" : "No"?></td><?
@@ -143,7 +143,7 @@ if ($user === FALSE || !$user->admin) {
 						?><input type="submit" name="action_" value="Change Password"><?
 						?><input type="submit" name="action_" value="Make User"><?
 						?><br><?
-						?><input type="text" name="name" value="<?=qdb_htmlentities($auser->name, ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8", ENT_COMPAT, "UTF-8")?>"><?
+						?><input type="text" name="name" value="<?=qdb_htmlentities($auser->name)?>"><?
 						?><input type="submit" name="action_" value="Rename"><?
 						?><input type="submit" name="action_" value="Delete"><?
 						?><input type="submit" name="action_" value="Make Admin"><?
