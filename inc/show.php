@@ -26,9 +26,9 @@ function qdb_get_show($id) {
 		$stmt->closeCursor();
 
 		if ($quote === FALSE) {
-			qdb_err("Quote #".$id." does not exist.");
+			qdb_err("Quote #".qdb_htmlentities($id)." does not exist.");
 		} else if ($quote->hide && ($user === FALSE || !$user->admin)) {
-			qdb_err("Quote #".$id." is hidden.");
+			qdb_err("Quote #".qdb_htmlentities($id)." is hidden.");
 		} else {
 			$stmt = $db->prepare("SELECT tags.*,"
 				." (SELECT users.name FROM users WHERE quotes_tags.users_id=users.id) AS users_name FROM tags"

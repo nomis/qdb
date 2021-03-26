@@ -57,7 +57,7 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 
 		if (!$exists && $stmt->rowCount() > 0) {
 			$id = $db->lastInsertId("quotes_id_seq");
-			qdb_ok('Added quote <a href="./?'.$id.'" title="quote #'.$id.'">#'.$id.'</a>.');
+			qdb_ok('Added quote <a href="./?'.urlencode($id).'" title="quote #'.qdb_htmlentities($id).'">#'.qdb_htmlentities($id).'</a>.');
 
 			$oktags = array();
 			if (!$config['tags_useronly'] || $user !== FALSE) {
@@ -124,10 +124,10 @@ if ($config["disabled"] && ($user === FALSE || !$user->admin)) {
 			}
 
 			foreach ($config['email_full'] as $email) {
-				mail($email, "Quote #".$id." "
+				mail($email, "Quote #".qdb_htmlentities($id)." "
 					."(".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"].")"
 					.(count($oktags) == 0 ? "" : " ".implode(" ", $oktags)),
-					$config['base_url'].'?'.$id."\r\n\r\n"
+					$config['base_url'].'?'.qdb_htmlentities($id)."\r\n\r\n"
 					."From: ".($user === FALSE ? "" : qdb_htmlentities($user->name)."/").$_SERVER["REMOTE_ADDR"]."\r\n"
 					.(count($oktags) == 0 ? "" : "Tags: ".implode(" ", $oktags)."\r\n")
 					."\r\n".str_replace("\n","\r\n",$_POST["quote"])

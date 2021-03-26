@@ -190,7 +190,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 						$stmt2->execute();
 						qdb_ok("Quote rated.");
 					} else {
-						qdb_err("Quote #".$_GET["id"]." does not exist.");
+						qdb_err("Quote #".qdb_htmlentities($_GET["id"])." does not exist.");
 					}
 					$stmt->closeCursor();
 					$stmt2->closeCursor();
@@ -224,7 +224,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				if ($stmt->rowCount() > 0) {
 					qdb_ok("Quote ".($_GET["flag"] == 0 ? "un" : "")."flagged.");
 				} else {
-					qdb_err("Quote #".$_GET["id"]." does not exist.");
+					qdb_err("Quote #".qdb_htmlentities($_GET["id"])." does not exist.");
 				}
 				$stmt->closeCursor();
 
@@ -256,7 +256,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				if ($stmt->rowCount() > 0) {
 					qdb_ok("Quote ".($_GET["hide"] == 0 ? "shown" : "hidden").".");
 				} else {
-					qdb_err("Quote #".$_GET["id"]." does not exist.");
+					qdb_err("Quote #".qdb_htmlentities($_GET["id"])." does not exist.");
 				}
 				$stmt->closeCursor();
 
@@ -293,9 +293,9 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				if ($stmt->rowCount() > 0) {
 					$db->commit();
 
-					qdb_ok("Quote #".$_GET["id"]." deleted.");
+					qdb_ok("Quote #".qdb_htmlentities($_GET["id"])." deleted.");
 				} else {
-					qdb_err("Quote #".$_GET["id"]." does not exist.");
+					qdb_err("Quote #".qdb_htmlentities($_GET["id"])." does not exist.");
 				}
 				$stmt->closeCursor();
 			} catch (PDOException $e) {
@@ -319,7 +319,7 @@ if (isset($_GET["id"]) && qdb_digit($_GET["id"])) {
 				$stmt->closeCursor();
 
 				if ($quote === FALSE) {
-					qdb_err("Quote #".$_GET["id"]." does not exist.");
+					qdb_err("Quote #".qdb_htmlentities($_GET["id"])." does not exist.");
 				} else {
 					$stmt = $db->prepare("SELECT tags.* FROM tags"
 						." JOIN quotes_tags ON tags.id=quotes_tags.tags_id"
