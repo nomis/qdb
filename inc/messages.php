@@ -74,14 +74,14 @@ function qdb_die($e) {
 	die();
 }
 
-function qdb_ok($msg) {
+function qdb_ok($html_msg) {
 	global $msgs;
-	$msgs[] = array(type => 'ok', text => $msg);
+	$msgs[] = array(type => 'ok', html => $html_msg);
 }
 
-function qdb_err($msg) {
+function qdb_err($html_msg) {
 	global $msgs;
-	$msgs[] = array(type => 'err', text => $msg);
+	$msgs[] = array(type => 'err', html => $html_msg);
 }
 
 function qdb_messages() {
@@ -92,7 +92,7 @@ function qdb_messages() {
 	if (count($msgs) == 0) { return; }
 	echo '<p><ul class="msgs">';
 	foreach ($msgs as $msg) {
-		echo '<li class="'.$msg['type'].'">'.$msg['text'].'</li>';
+		echo '<li class="'.$msg['type'].'">'.$msg['html'].'</li>';
 	}
 	echo '</ul></p>';
 	$msgs = array();
@@ -104,7 +104,7 @@ function qdb_async_messages() {
 	if (count($msgs) == 0) { return; }
 	echo '<msgs><![CDATA[<ul class="msgs">';
 	foreach ($msgs as $msg) {
-		echo '<li class="'.$msg['type'].'">'.$msg['text'].'</li>';
+		echo '<li class="'.$msg['type'].'">'.$msg['html'].'</li>';
 	}
 	echo '</ul>]]></msgs>';
 	$msgs = array();
