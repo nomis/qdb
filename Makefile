@@ -1,6 +1,6 @@
 .PHONY: dist
 
-NAME=qdb-3_0
+NAME=qdb-3_1
 
 dist:
 	git archive --format=tar --prefix=$(NAME)/ HEAD | bzip2 -9 > $(NAME).tar.bz2
