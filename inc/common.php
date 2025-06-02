@@ -15,7 +15,6 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined("QDB_ASYNC")) { header("Content-Type: text/html; charset=UTF-8"); }
-include("magic_quotes.php");
 include("messages.php");
 
 function qdb_digit($str) { return preg_match('/^[0-9]+$/', $str); }
