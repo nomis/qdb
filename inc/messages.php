@@ -1,6 +1,6 @@
 <?
 /*
-	Copyright ©2008-2011,2021  Simon Arlott
+	Copyright ©2008-2011,2021,2025  Simon Arlott
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Affero General Public License v3
@@ -76,12 +76,12 @@ function qdb_die($e) {
 
 function qdb_ok($html_msg) {
 	global $msgs;
-	$msgs[] = array(type => 'ok', html => $html_msg);
+	$msgs[] = array("type" => 'ok', "html" => $html_msg);
 }
 
 function qdb_err($html_msg) {
 	global $msgs;
-	$msgs[] = array(type => 'err', html => $html_msg);
+	$msgs[] = array("type" => 'err', "html" => $html_msg);
 }
 
 function qdb_messages() {
